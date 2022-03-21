@@ -1,10 +1,10 @@
 
 class Device {
-    constructor(iconName, name, deviceStatus, order) {
+    constructor(iconName, name, value, order) {
         this.iconName = iconName;
         this.name = name;
-        this.deviceStatus = deviceStatus;
-        this.order  = order; //ordem de exibição (externa ao componente)
+        this.value = value;
+        this.order = order; //ordem de exibição (externa ao componente)
     }
 }
 
