@@ -13,7 +13,7 @@ function AmbientDevices({ ambient }) {
     }, []);
 
     useEffect(() => {
-        ambient.devices.sort((a, b) => (a.order > b.order) ? 1 : -1); 
+        ambient.devices.sort((a, b) => (a.order > b.order) ? 1 : -1);
         return () => {
             setUpdate(true);
         }

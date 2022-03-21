@@ -10,6 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-firebase/app": "^14.5.1",
+    "@react-native-firebase/database": "^14.5.1",
     "lodash.get": "^4.4.2",
     "react": "17.0.2",
     "react-native": "0.67.3",
