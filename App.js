@@ -7,6 +7,8 @@ import React, { useState, useRef } from 'react'
 import { SafeAreaView, Text, View, StyleSheet, ScrollView, Animated } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu';
 
+import database from '@react-native-firebase/database'
+
 //self-made components
 import TabButtonConfig from './src/components/TabButtonConfig';
 import TabButtonAbout from './src/components/TabButtonAbout';
@@ -32,8 +34,10 @@ import Device from './src/logic_components/Device';
 const backgroundAreaColor = 'white';
 const foregroundAreaColor = 'rgb(27,27,27)';
 
+
+
 //must be instantiated with information from Firebase , mas será adicionado via app futuramente
-dev1 = new Device('lightbulb', 'Lâmpada', 'Acesa', 1);
+dev1 = new Device('lightbulb', 'Lâmpada', "Acesa", 1);
 dev2 = new Device('lightbulb', 'Lâmpada', 'Apagada', 2);
 dev3 = new Device('fan', 'Ventilador', '50%', 3);
 dev4 = new Device('fan', 'Ar Cond.', '23°C', 4);
@@ -44,7 +48,7 @@ dev8 = new Device('lightbulb', 'Lâmpada', 'Acesa', 8);
 dev9 = new Device('lightbulb', 'Lâmpada', 'Apagada', 9);
 
 // grupo de devices não podem ser compartilhados entre ambientes (!!)
-const devices1 = [dev2, dev3, dev4, dev5];
+const devices1 = [dev1, dev3, dev4, dev5];
 const devices2 = [dev1, dev7, dev5];
 const devices3 = [dev1, dev6, dev9];
 const devices4 = [dev1, dev8, dev9, dev6];
@@ -58,7 +62,7 @@ amb4 = new Ambient('lightbulb', 'Externo', devices4, 3);
 allAmbients = [amb1, amb2, amb3, amb4];
 
 
-function App() { 
+function App() {
   const [currentTab, setCurrentTab] = useState("Home");
   const [currentAmbient, setCurrentAmbient] = useState(amb1);
   const [overLayType, setOverLayType] = useState('ambient'); //set for tests opening this screen first
@@ -68,6 +72,14 @@ function App() {
   const offsetValue = useRef(new Animated.Value(0)).current;
   const scaleValue = useRef(new Animated.Value(1)).current;// initially must be 1
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
+
+  /************** essa inicialização funcionou, falta ser estruturada */
+  let dbRef = database().ref(`${'lampadaQuarto'}/`);
+  dbRef.on("value", dataSnapshot => {
+    (dataSnapshot.val().value === "1")? dev1.value = "Acesa" : dev1.value = "Apagada";
+  })
+  /*****************/
+
 
   const handleMenu = () => {
     //scaling the view
