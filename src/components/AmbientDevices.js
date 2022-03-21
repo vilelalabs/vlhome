@@ -1,16 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import SortableGrid from 'react-native-sortable-grid'
 var getOrder = require('lodash.get');
+
+import database from '@react-native-firebase/database';
+
 
 import SingleDeviceOnAmbient from './SingleDeviceOnAmbient'
 
 function AmbientDevices({ ambient }) {
-    const [devices, setDevices] = React.useState(ambient.devices);
     const [update, setUpdate] = React.useState(true);
 
+    const [device, setDevice] = useState("lampadaQuarto");
+    const [value, setValue] = useState();
+    const [ipAddress, setIpAddress] = useState();
+
     useEffect(() => {
-        setDevices(ambient.devices);
-    }, []);
+        const interval = setInterval(async () => {
+            let dbRef = database().ref(`${device}/`);
+            dbRef.on("value", dataSnapshot => {
+                setValue(dataSnapshot.val().value);
+                setIpAddress(dataSnapshot.val().ipAddress);
+                //console.log("value:", value);
+            });
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [value]);
+
+
+    function handleClick(dev) {
+        let dbRef = database().ref(`${device}/`);
+        setValue(value == "0" ? "1" : "0");
+        dbRef.update({ "value": value == "0" ? "1" : "0" });
+        dev.value = (value == "0") ? "Apagada" : "Acesa";
+        // linha acima atualiza valor de forma atrasada para a visualização
+        // na interface
+    }
 
     useEffect(() => {
         ambient.devices.sort((a, b) => (a.order > b.order) ? 1 : -1);
@@ -18,6 +42,13 @@ function AmbientDevices({ ambient }) {
             setUpdate(true);
         }
     }, [update]);
+
+    useEffect(() => {
+
+        console.log(`novo valor: ${value} no device`);
+    }, [value]);
+
+
     return (
         <>
             {update && <SortableGrid
@@ -26,11 +57,6 @@ function AmbientDevices({ ambient }) {
                     finalOrder.map((item) => {
                         ambient.devices[item.key].order = item.order;
                     });
-                    //setDevices(ambient.devices);
-                    ambient.devices.map((device) => {
-                        //console.log(`O dispositivo ${device.name} foi movido para a posição ${device.order}`);
-                    });
-                    setDevices(ambient.devices);
                     setUpdate(false);
                 }}
                 itemsPerRow={3}
@@ -41,7 +67,10 @@ function AmbientDevices({ ambient }) {
                         key={index}
                         iconName={dev.iconName}
                         deviceName={dev.name}
-                        deviceStatus={dev.deviceStatus}
+                        deviceStatus={dev.value}
+                        onTap={() => {
+                            handleClick(dev);
+                        }}
                     />
                 )}
             </SortableGrid>}
