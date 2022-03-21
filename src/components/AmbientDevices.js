@@ -9,6 +9,9 @@ import SingleDeviceOnAmbient from './SingleDeviceOnAmbient'
 
 function AmbientDevices({ ambient }) {
     const [update, setUpdate] = React.useState(true);
+    const [updateValues, setUpdateValues] = React.useState(true);
+
+    const[currentDevice, setCurrentDevice] = React.useState({});
 
     const [device, setDevice] = useState("lampadaQuarto");
     const [value, setValue] = useState();
@@ -31,9 +34,9 @@ function AmbientDevices({ ambient }) {
         let dbRef = database().ref(`${device}/`);
         setValue(value == "0" ? "1" : "0");
         dbRef.update({ "value": value == "0" ? "1" : "0" });
-        dev.value = (value == "0") ? "Apagada" : "Acesa";
-        // linha acima atualiza valor de forma atrasada para a visualização
-        // na interface
+        setCurrentDevice(dev);
+        setUpdateValues(false);     
+
     }
 
     useEffect(() => {
@@ -42,6 +45,15 @@ function AmbientDevices({ ambient }) {
             setUpdate(true);
         }
     }, [update]);
+
+    useEffect(() => {
+        currentDevice.value = (value == "0") ? "Apagada" : "Acesa";
+        return () => {
+            setUpdateValues(true);
+        }
+    }, [updateValues]);
+
+
 
     useEffect(() => {
 
@@ -70,6 +82,7 @@ function AmbientDevices({ ambient }) {
                         deviceStatus={dev.value}
                         onTap={() => {
                             handleClick(dev);
+                            
                         }}
                     />
                 )}
