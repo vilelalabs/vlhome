@@ -3,7 +3,7 @@
 Teste do exemplo do vídeo: https://www.youtube.com/watch?v=roXoHAP-28g
 
 */
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { SafeAreaView, Text, View, StyleSheet, ScrollView, Animated } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu';
 
@@ -27,15 +27,26 @@ import OverLayConfigDeleteAmbient from './src/components/OverLays/ConfigAmbients
 import OverLayConfigReorderAmbient from './src/components/OverLays/ConfigAmbients/OverLayConfigReorderAmbient';
 
 import MenuAmbients from './src/components/MenuAmbients';
+
 //logic-components
 import Ambient from './src/logic_components/Ambient';
 import Device from './src/logic_components/Device';
+import Factory from './src/logic_components/Factory';
+
+/*
+Can I download firebase database json?
+https://stackoverflow.com/questions/57596705/can-i-download-firebase-database-json
+usar axios para importar o JSON? (isso faria com que o acesso fosse direto para a inicilização),
+Depois de importar o JSON, usar o database.ref(path) para acessar e modificar direto no firebase
+*/
+import data from './src/logic_components/data.json';
 
 const backgroundAreaColor = 'white';
 const foregroundAreaColor = 'rgb(27,27,27)';
 
-
-
+let allDevices = [];
+let allAmbients = [];
+/*
 //must be instantiated with information from Firebase , mas será adicionado via app futuramente
 dev1 = new Device('lightbulb', 'Lâmpada', "Acesa", 1);
 dev2 = new Device('lightbulb', 'Lâmpada', 'Apagada', 2);
@@ -59,12 +70,18 @@ amb2 = new Ambient('television', 'Sala', devices2, 1);
 amb3 = new Ambient('garage', 'Garagem', devices3, 2);
 amb4 = new Ambient('lightbulb', 'Externo', devices4, 3);
 
-allAmbients = [amb1, amb2, amb3, amb4];
-
+//allAmbients = [amb1, amb2, amb3, amb4];
+*/
+data.ambients.forEach(amb => {
+  allAmbients.push(Factory('ambient', amb.iconName, amb.name, amb.devices, amb.order));
+});
+data.devices.forEach(dev => {
+  allDevices.push(Factory('device', dev.iconName, dev.name, dev.value, dev.order));
+});
 
 function App() {
   const [currentTab, setCurrentTab] = useState("Home");
-  const [currentAmbient, setCurrentAmbient] = useState(amb1);
+  const [currentAmbient, setCurrentAmbient] = useState(allAmbients[0]);
   const [overLayType, setOverLayType] = useState('ambient'); //set for tests opening this screen first
   const [showMenu, setShowMenu] = useState(false);
 
@@ -73,13 +90,23 @@ function App() {
   const scaleValue = useRef(new Animated.Value(1)).current;// initially must be 1
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
 
-  /************** essa inicialização funcionou, falta ser estruturada */
-  let dbRef = database().ref(`${'lampadaQuarto'}/`);
-  dbRef.on("value", dataSnapshot => {
-    (dataSnapshot.val().value === "1")? dev1.value = "Acesa" : dev1.value = "Apagada";
-  })
-  /*****************/
+  /**************   --------------- inicialização dos Dispositivos --------------   ************/
+  function InitializeDevices() {
 
+    /**
+     *    O acesso ao Firebase (abaixo) deverá ser tratado de acordo com o formato utilizado no Firebase
+     *    Será colocado dentro dos "forEach" (que deveriam ser retornados para dentro da função Initialize Devices)
+     */
+    /************** acesso pelo Firebase -  ************/
+    let dbRef = database().ref(`${'lampadaQuarto'}/`);
+    dbRef.on("value", dataSnapshot => {
+      (dataSnapshot.val().value === "1") ? allDevices[0].value = "Acesa" : allDevices[0].value = "Apagada";
+    })
+  }
+
+  useEffect(() => {
+    InitializeDevices();
+  }, []);
 
   const handleMenu = () => {
     //scaling the view
