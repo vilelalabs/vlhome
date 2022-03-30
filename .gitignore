@@ -61,3 +61,4 @@ buck-out/
 
 #added
 android/app/google-services.json
+backup/

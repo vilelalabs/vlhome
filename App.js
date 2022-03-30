@@ -1,15 +1,11 @@
-/*
-
-Teste do exemplo do vídeo: https://www.youtube.com/watch?v=roXoHAP-28g
-
-*/
 import React, { useState, useRef, useEffect } from 'react'
 import { SafeAreaView, Text, View, StyleSheet, ScrollView, Animated } from 'react-native'
 import { MenuProvider } from 'react-native-popup-menu';
 
-import database from '@react-native-firebase/database'
+// import components
 
-//self-made components
+import LoadScreen from './src/LoadScreen';
+
 import TabButtonConfig from './src/components/TabButtonConfig';
 import TabButtonAbout from './src/components/TabButtonAbout';
 
@@ -29,49 +25,18 @@ import OverLayConfigReorderAmbient from './src/components/OverLays/ConfigAmbient
 import MenuAmbients from './src/components/MenuAmbients';
 
 //logic-components
-import Ambient from './src/logic_components/Ambient';
-import Device from './src/logic_components/Device';
 import Factory from './src/logic_components/Factory';
-
-/*
-Can I download firebase database json?
-https://stackoverflow.com/questions/57596705/can-i-download-firebase-database-json
-usar axios para importar o JSON? (isso faria com que o acesso fosse direto para a inicilização),
-Depois de importar o JSON, usar o database.ref(path) para acessar e modificar direto no firebase
-*/
-import data from './src/logic_components/data.json';
+import data from './src/logic_components/initData.json';
 
 const backgroundAreaColor = 'white';
 const foregroundAreaColor = 'rgb(27,27,27)';
 
-let allDevices = [];
+import getData from './getData';
+
 let allAmbients = [];
-/*
-//must be instantiated with information from Firebase , mas será adicionado via app futuramente
-dev1 = new Device('lightbulb', 'Lâmpada', "Acesa", 1);
-dev2 = new Device('lightbulb', 'Lâmpada', 'Apagada', 2);
-dev3 = new Device('fan', 'Ventilador', '50%', 3);
-dev4 = new Device('fan', 'Ar Cond.', '23°C', 4);
-dev5 = new Device('television', 'Televisão', 'Ligada', 5);
-dev6 = new Device('garage', 'Portão', 'Aberto fechando...', 6);
-dev7 = new Device('fan', 'Ventilador', '50%', 7);
-dev8 = new Device('lightbulb', 'Lâmpada', 'Acesa', 8);
-dev9 = new Device('lightbulb', 'Lâmpada', 'Apagada', 9);
+let allDevices = [];
 
-// grupo de devices não podem ser compartilhados entre ambientes (!!)
-const devices1 = [dev1, dev3, dev4, dev5];
-const devices2 = [dev1, dev7, dev5];
-const devices3 = [dev1, dev6, dev9];
-const devices4 = [dev1, dev8, dev9, dev6];
-
-//must be local saved, or from Firebase (another branch only for 'ambients')
-amb1 = new Ambient('bed', 'Quarto Frente', devices1, 0);
-amb2 = new Ambient('television', 'Sala', devices2, 1);
-amb3 = new Ambient('garage', 'Garagem', devices3, 2);
-amb4 = new Ambient('lightbulb', 'Externo', devices4, 3);
-
-//allAmbients = [amb1, amb2, amb3, amb4];
-*/
+// carrega ambiente provisório para inicialização não zerada das variáveis allAmbients e allDevices
 data.ambients.forEach(amb => {
   allAmbients.push(Factory('ambient', amb.iconName, amb.name, amb.devices, amb.order));
 });
@@ -80,8 +45,23 @@ data.devices.forEach(dev => {
 });
 
 function App() {
+
+  const [loadScreen, setLoadScreen] = useState(true);
+  const [currentAmbient, setCurrentAmbient] = useState(allAmbients[0])
+
+  useEffect(() => {
+    (async () => {
+      let Alldata = await getData();
+      allAmbients = Alldata[0];
+      allDevices = Alldata[1];
+      setLoadScreen(false);
+      setCurrentAmbient(allAmbients[0]);
+    })();
+  }, []);
+
+
   const [currentTab, setCurrentTab] = useState("Home");
-  const [currentAmbient, setCurrentAmbient] = useState(allAmbients[0]);
+
   const [overLayType, setOverLayType] = useState('ambient'); //set for tests opening this screen first
   const [showMenu, setShowMenu] = useState(false);
 
@@ -90,23 +70,6 @@ function App() {
   const scaleValue = useRef(new Animated.Value(1)).current;// initially must be 1
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
 
-  /**************   --------------- inicialização dos Dispositivos --------------   ************/
-  function InitializeDevices() {
-
-    /**
-     *    O acesso ao Firebase (abaixo) deverá ser tratado de acordo com o formato utilizado no Firebase
-     *    Será colocado dentro dos "forEach" (que deveriam ser retornados para dentro da função Initialize Devices)
-     */
-    /************** acesso pelo Firebase -  ************/
-    let dbRef = database().ref(`${'lampadaQuarto'}/`);
-    dbRef.on("value", dataSnapshot => {
-      (dataSnapshot.val().value === "1") ? allDevices[0].value = "Acesa" : allDevices[0].value = "Apagada";
-    })
-  }
-
-  useEffect(() => {
-    InitializeDevices();
-  }, []);
 
   const handleMenu = () => {
     //scaling the view
@@ -136,45 +99,55 @@ function App() {
     setShowMenu(false);
   }
 
-  return (
-    <MenuProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={{ justifyContent: 'flex-start' }}>
-          <Text style={styles.menuTitle}>Ambientes</Text>
+  if (loadScreen) {
+    return (
+      <>
+        <LoadScreen />
+      </>
+    )
+  }
+  else {
+    return (
+      <MenuProvider>
+        <SafeAreaView style={styles.container}>
+          <View style={{ justifyContent: 'flex-start' }}>
+            <Text style={styles.menuTitle}>Ambientes</Text>
 
-          <ScrollView style={{ flexGrow: 1, marginTop: 15 }}>
-            {MenuAmbients(currentAmbient, setCurrentAmbient, currentTab, setCurrentTab, allAmbients, handleMenu, setOverLayType)}
-          </ScrollView>
-          <View>
-            {TabButtonConfig(currentTab, setCurrentTab, handleMenu, setOverLayType)}
-            {TabButtonAbout(currentTab, setCurrentTab, handleMenu, setOverLayType)}
+            <ScrollView style={{ flexGrow: 1, marginTop: 15 }}>
+              {MenuAmbients(currentAmbient, setCurrentAmbient, currentTab, setCurrentTab, allAmbients, handleMenu, setOverLayType)}
+            </ScrollView>
+            <View>
+              {TabButtonConfig(currentTab, setCurrentTab, handleMenu, setOverLayType)}
+              {TabButtonAbout(currentTab, setCurrentTab, handleMenu, setOverLayType)}
+            </View>
           </View>
-        </View>
 
-        {/* Over lays views...*/}
-        {(overLayType === 'ambient') &&
-          OverLayAmbient(currentAmbient, handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
-        {(overLayType === 'config') &&
-          OverLayConfig(handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
-        {(overLayType === 'about') &&
-          OverLayAbout(handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
-        {(overLayType === 'configNewDevice') &&
-          OverLayConfigNewDevice(changeOverlayType, allAmbients)}
-        {(overLayType === 'configEditDevice') &&
-          OverLayConfigEditDevice(changeOverlayType, allAmbients)}
-        {(overLayType === 'configDeleteDevice') &&
-          OverLayConfigDeleteDevice(changeOverlayType, allAmbients)}
-        {(overLayType === 'configNewAmbient') &&
-          OverLayConfigNewAmbient(changeOverlayType, allAmbients)}
-        {(overLayType === 'configEditAmbient') &&
-          OverLayConfigEditAmbient(changeOverlayType, allAmbients)}
-        {(overLayType === 'configDeleteAmbient') &&
-          OverLayConfigDeleteAmbient(changeOverlayType, allAmbients)}
-        {(overLayType === 'configReorderAmbient') &&
-          OverLayConfigReorderAmbient(changeOverlayType, allAmbients)}
-      </SafeAreaView>
-    </MenuProvider>
-  )
+          {/* Over lays views...*/}
+          {(overLayType === 'ambient') &&
+            OverLayAmbient(currentAmbient, handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
+          {(overLayType === 'config') &&
+            OverLayConfig(handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
+          {(overLayType === 'about') &&
+            OverLayAbout(handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
+          {(overLayType === 'configNewDevice') &&
+            OverLayConfigNewDevice(changeOverlayType, allAmbients)}
+          {(overLayType === 'configEditDevice') &&
+            OverLayConfigEditDevice(changeOverlayType, allAmbients)}
+          {(overLayType === 'configDeleteDevice') &&
+            OverLayConfigDeleteDevice(changeOverlayType, allAmbients)}
+          {(overLayType === 'configNewAmbient') &&
+            OverLayConfigNewAmbient(changeOverlayType, allAmbients)}
+          {(overLayType === 'configEditAmbient') &&
+            OverLayConfigEditAmbient(changeOverlayType, allAmbients)}
+          {(overLayType === 'configDeleteAmbient') &&
+            OverLayConfigDeleteAmbient(changeOverlayType, allAmbients)}
+          {(overLayType === 'configReorderAmbient') &&
+            OverLayConfigReorderAmbient(changeOverlayType, allAmbients)}
+        </SafeAreaView>
+      </MenuProvider>
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({

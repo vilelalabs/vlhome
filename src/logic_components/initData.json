@@ -1,0 +1,25 @@
+{
+  "ambients": [
+    {
+      "devices": [
+        {
+          "iconName": "lightbulb",
+          "name": "fk_Lâmp",
+          "order": 0,
+          "value": "Acesa"
+        }
+      ],
+      "iconName": "bed",
+      "name": "fk_Quarto",
+      "order": 0
+    }
+  ],
+  "devices": [
+    {
+      "iconName": "lightbulb",
+      "name": "fk_Lâmp",
+      "order": 0,
+      "value": "Acesa"
+    }
+  ]
+}

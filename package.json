@@ -12,9 +12,11 @@
   "dependencies": {
     "@react-native-firebase/app": "^14.5.1",
     "@react-native-firebase/database": "^14.5.1",
+    "axios": "^0.26.1",
     "lodash.get": "^4.4.2",
     "react": "17.0.2",
     "react-native": "0.67.3",
+    "react-native-fs": "^2.19.0",
     "react-native-popup-menu": "^0.15.12",
     "react-native-sortable-grid": "^2.0.0",
     "react-native-vector-icons": "^9.1.0"

@@ -85,3 +85,26 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+
+/* Additional firebase commands/functions
+
+    // ************** acesso pelo Firebase -  ***********
+    let dbRef = database().ref(`${'ambients/0/devices/0'}/`);
+    dbRef.on("value", dataSnapshot => {
+      (dataSnapshot.val().value === "1") ? allDevices[0].value = "Acesa" : allDevices[0].value = "Apagada";
+    })
+
+*/
+
+/*useEffect(() => {
+        const interval = setInterval(async () => {
+            let dbRef = database().ref(`${device}/`);
+            dbRef.on("value", dataSnapshot => {
+                setValue(dataSnapshot.val().value);
+                setIpAddress(dataSnapshot.val().ipAddress);
+                //console.log("value:", value);
+            });
+        }, 2000);
+        return () => clearInterval(interval);
+    }, [value]);*/
