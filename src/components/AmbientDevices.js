@@ -14,33 +14,66 @@ function AmbientDevices({ ambient }) {
 
     const [currentDevice, setCurrentDevice] = React.useState({});
 
-    const [device, setDevice] = useState("ambients/0/devices/0/");
     const [value, setValue] = useState([]);
     const [ipAddress, setIpAddress] = useState();
 
 
     function handleClick(dev) {
         let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
-        dbRef.update({ "value": (dev.value == "Apagada") ? "Acesa" : "Apagada" });
+        let newDeviceValue = 'no value';
+        switch (dev.type) {
+            case 'light':
+                newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
+                break;
+            case 'dimmer':
+                //...
+                break;
+            case 'gate':
+                //...
+                break;
+            default:
+                break;
+        }
+
+
+
+        dbRef.update({ "value": newDeviceValue });
 
         const newValue = value;
-        dbRef.on("value", dataSnapshot => {
-            const importedValue = dataSnapshot.val().value;
-            newValue[dev.order] = importedValue;
-            dev.value = importedValue;
-        });
+
+        newValue[dev.order] = newDeviceValue;
+        dev.value = newDeviceValue;
+
         setValue(newValue);
         setCurrentDevice(dev);
         setUpdateValues(false);
         setUpdate(false);
     }
 
+
     useEffect(() => {
-        ambient.devices.sort((a, b) => (a.order > b.order) ? 1 : -1);
+
+        (async () => {
+            await ambient.devices.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        })();
+
+        //send new ambient.devices to database
+        if (ambient.devices[0].name !== 'initDevice') {
+            ambient.devices.forEach(dev => {
+                let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
+                dbRef.update({ "iconName": dev.iconName });
+                dbRef.update({ "ipAddress": dev.ipAddress });
+                dbRef.update({ "name": dev.name });
+                dbRef.update({ "value": dev.value });
+                dbRef.update({ "order": dev.order });
+                dbRef.update({ "type": dev.type });
+            });
+        }
         return () => {
+
             setTimeout(() => {
                 setUpdate(true);
-            }, 250);
+            }, 300);
         }
     }, [update]);
 
@@ -56,10 +89,14 @@ function AmbientDevices({ ambient }) {
             {update && <SortableGrid
                 onDragRelease={(itemOrder) => {
                     var finalOrder = getOrder(itemOrder, `itemOrder`);
+
                     finalOrder.map((item) => {
                         ambient.devices[item.key].order = item.order;
+                        // linha acima não pode ser executada apos update do database
+
                     });
                     setUpdate(false);
+
                 }}
                 itemsPerRow={3}
                 dragActivationTreshold={1000} // will be 3000 in production

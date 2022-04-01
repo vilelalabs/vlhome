@@ -38,10 +38,10 @@ let allDevices = [];
 
 // carrega ambiente provisório para inicialização não zerada das variáveis allAmbients e allDevices
 data.ambients.forEach(amb => {
-  allAmbients.push(Factory('ambient', amb.iconName, amb.name, amb.devices, amb.order));
+  allAmbients.push(Factory('ambient', amb.id, amb.iconName, amb.name, amb.devices, amb.order));
 });
 data.devices.forEach(dev => {
-  allDevices.push(Factory('device', dev.iconName, dev.name, dev.value, dev.order));
+  allDevices.push(Factory('device', dev.ipAddress, dev.iconName, dev.name, dev.value, dev.order, dev.type));
 });
 
 function App() {

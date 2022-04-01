@@ -1,7 +1,8 @@
 
 class Ambient {
 
-    constructor(iconName, name, devices, order) {
+    constructor(id, iconName, name, devices, order) {
+        this.id = id;
         this.iconName = iconName;
         this.name = name; 
         this.devices = devices; //array de dispositivos (class Device instance)

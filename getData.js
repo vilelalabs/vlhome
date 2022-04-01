@@ -8,10 +8,10 @@ async function getData() {
 
     if (response.data) {
         response.data.ambients.forEach(amb => {
-            allAmbients.push(Factory('ambient', amb.iconName, amb.name, amb.devices, amb.order));
+            allAmbients.push(Factory('ambient', amb.id, amb.iconName, amb.name, amb.devices, amb.order));
         });
         response.data.devices.forEach(dev => {
-            allDevices.push(Factory('device', dev.iconName, dev.name, dev.value, dev.order));
+            allDevices.push(Factory('device', dev.ipAddress, dev.iconName, dev.name, dev.value, dev.order, dev.type));
         });
 
         return [allAmbients, allDevices];

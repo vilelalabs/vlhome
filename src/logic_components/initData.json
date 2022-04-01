@@ -4,22 +4,25 @@
       "devices": [
         {
           "iconName": "lightbulb",
-          "name": "fk_Lâmp",
+          "name": "initDevice",
           "order": 0,
-          "value": "Acesa"
+          "value": "Acesa",
+          "ipAddress": "192.168.15.201"
         }
       ],
       "iconName": "bed",
-      "name": "fk_Quarto",
-      "order": 0
+      "name": "initAmbient",
+      "order": 0,
+      "id": 0
     }
   ],
   "devices": [
     {
       "iconName": "lightbulb",
-      "name": "fk_Lâmp",
+      "name": "initDevice",
       "order": 0,
-      "value": "Acesa"
+      "value": "Acesa",
+      "ipAddress": "192.168.15.202"
     }
   ]
 }
