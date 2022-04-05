@@ -15,8 +15,38 @@ function AmbientDevices({ ambient }) {
     const [currentDevice, setCurrentDevice] = React.useState({});
 
     const [value, setValue] = useState([]);
-    const [ipAddress, setIpAddress] = useState();
+    //const [ipAddress, setIpAddress] = useState([]);
 
+    function autoUpdate() {
+        const newValue = value;
+        let fullDevice = {};
+        // stream values from firebase realtime database
+        if (ambient.devices[0].name !== 'initDevice') {
+            ambient.devices.forEach(dev => {
+                let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
+                dbRef.on('value', (snapshot) => {
+                    console.log("ON_value");
+                    if (snapshot.val().value) {
+                        setUpdate(false);
+                        newValue[dev.order] = snapshot.val().value;
+                        dev.value = snapshot.val().value;
+                        setValue(newValue);
+                        setUpdateValues(false);
+                    }
+                });
+            });
+        }
+    }
+
+    useEffect(() => {
+        autoUpdate();
+        //autoUpdate('ipAddress');
+
+        return () => {
+            setUpdate(true);
+            setUpdateValues(true);
+        }
+    }, [ambient]);
 
     function handleClick(dev) {
         let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);

@@ -28,7 +28,6 @@ const MenuAmbients = (currentAmbient, setCurrentAmbient, currentTab, setCurrentT
                 dbRef.update({ "order": dev.order });
                 dbRef.update({ "type": dev.type });
             });
-
         });
     }
 
