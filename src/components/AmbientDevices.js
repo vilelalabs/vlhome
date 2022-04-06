@@ -55,10 +55,6 @@ function AmbientDevices({ allAmbients, ambient }) {
                 })
             })
         })
-
-
-        // liberar o setUpdate(newValue) e setUpdateValues para atualizar o ambiente.
-
     }
 
     useEffect(() => {
@@ -94,6 +90,7 @@ function AmbientDevices({ allAmbients, ambient }) {
                                 break;
                         }
                         dbRef.update({ "value": newDeviceValue });
+
                         const newValue = value;
                         newValue[dev.order] = newDeviceValue;
                         dev.value = newDeviceValue;
