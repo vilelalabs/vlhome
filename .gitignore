@@ -62,3 +62,6 @@ buck-out/
 #added
 android/app/google-services.json
 backup/
+
+#trash files
+backup/App_working_firebase.js

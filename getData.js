@@ -13,7 +13,6 @@ async function getData() {
     data = JSON.parse(await RNFetchBlob.fs.readFile(pathToRead, 'utf8'));
     if (data) {
         data.ambients.forEach(amb => {
-            console.log(amb.name);
             allAmbients.push(Factory('ambient', amb.id, amb.iconName, amb.name, amb.devices, amb.order));
         });
         return allAmbients;

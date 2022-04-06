@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import SortableGrid from 'react-native-sortable-grid'
 var getOrder = require('lodash.get');
+import axios from 'axios';
 
 import database from '@react-native-firebase/database';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -18,30 +19,50 @@ function AmbientDevices({ allAmbients, ambient }) {
     const [value, setValue] = useState([]);
     //const [ipAddress, setIpAddress] = useState([]);
 
-    function autoUpdate() {
+    async function autoUpdate() {
         const newValue = value;
-        let fullDevice = {};
-        // stream values from firebase realtime database
-        if (ambient.devices[0].name !== 'initDevice') {
-            ambient.devices.forEach(dev => {
-                let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
-                dbRef.on('value', (snapshot) => {
-                    console.log("ON_value");
-                    if (snapshot.val().value) {
-                        setUpdate(false);
-                        /*buscar o valor a ser alterado pelo IP do mesmo device "clicado" */
-                        newValue[dev.order] = snapshot.val().value;
-                        dev.value = snapshot.val().value;
-                        setValue(newValue);
-                        setUpdateValues(false);
-                    }
-                });
-            });
+        let fb_ipAddress;
+        let fb_allAmbients;
+
+        //receber todos ambientes e dispositivos do firebase em um novo array
+        const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
+        if (response.data) {
+            fb_allAmbients = response.data.ambients;
         }
+        //ao receber modificação de 'value' do firebase, comparar com allAmbients
+        let stopSearch = false;
+        fb_allAmbients.forEach(fb_amb => {
+            fb_amb.devices.forEach(fb_dev => {
+                let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
+                dbRef.on('value', (snapshot) => {
+                    fb_ipAddress = snapshot.val().ipAddress;
+                    //buscar o ipAddress igual e alterando o valor do dispositivo no app.
+                    allAmbients.every(amb => {
+                        amb.devices.every(dev => {
+                            if (dev.ipAddress === fb_ipAddress) {
+                                console.log(`Valor no dispositivo com ipAddress ${dev.ipAddress} foi alterado para ${snapshot.val().value}`);
+                                setUpdate(false);
+                                newValue[dev.order] = snapshot.val().value;
+                                dev.value = snapshot.val().value;
+                                setValue(newValue);
+                                setUpdateValues(false);
+                                stopSearch = true;
+                            }
+                            return stopSearch;
+                        })
+                        return stopSearch;
+                    })
+                })
+            })
+        })
+
+
+        // liberar o setUpdate(newValue) e setUpdateValues para atualizar o ambiente.
+
     }
 
     useEffect(() => {
-        autoUpdate();
+        (async () => autoUpdate())();
 
         return () => {
             setUpdate(true);
@@ -50,34 +71,40 @@ function AmbientDevices({ allAmbients, ambient }) {
     }, [ambient]);
 
     function handleClick(dev) {
-        let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
-        let newDeviceValue = 'no value';
-        switch (dev.type) {
-            case 'light':
-                newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
-                break;
-            case 'dimmer':
-                //...
-                break;
-            case 'gate':
-                //...
-                break;
-            default:
-                break;
-        }
+        let fb_ipAddress;
+        allAmbients.forEach(fb_amb => {
+            fb_amb.devices.forEach(fb_dev => {
+                let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
+                dbRef.once('value', (snapshot) => {
+                    fb_ipAddress = snapshot.val().ipAddress;
 
-
-        dbRef.update({ "value": newDeviceValue });
-
-        const newValue = value;
-
-        newValue[dev.order] = newDeviceValue;
-        dev.value = newDeviceValue;
-
-        setValue(newValue);
-        setCurrentDevice(dev);
-        setUpdateValues(false);
-        setUpdate(false);
+                    if (fb_ipAddress === dev.ipAddress) {
+                        let newDeviceValue = 'no value';
+                        switch (dev.type) {
+                            case 'light':
+                                newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
+                                break;
+                            case 'dimmer':
+                                //...
+                                break;
+                            case 'gate':
+                                //...
+                                break;
+                            default:
+                                break;
+                        }
+                        dbRef.update({ "value": newDeviceValue });
+                        const newValue = value;
+                        newValue[dev.order] = newDeviceValue;
+                        dev.value = newDeviceValue;
+                        setValue(newValue);
+                        setCurrentDevice(dev);
+                        setUpdateValues(false);
+                        setUpdate(false);
+                    }
+                });
+            });
+        });
     }
 
 
@@ -94,23 +121,10 @@ function AmbientDevices({ allAmbients, ambient }) {
             const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
             RNFetchBlob.fs
                 .writeFile(pathToWrite, JSONfile, 'utf8')
-                .then(() => {
-                    console.log(`wrote file on ${pathToWrite}`);
-
-                })
+                .then(() => { })
                 .catch(error => console.error(error));
 
         }
-
-        /*let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
-        dbRef.update({ "iconName": dev.iconName });
-        dbRef.update({ "ipAddress": dev.ipAddress });
-        dbRef.update({ "name": dev.name });
-        dbRef.update({ "value": dev.value });
-        dbRef.update({ "order": dev.order });
-        dbRef.update({ "type": dev.type });*/
-        //});
-
         return () => {
 
             setTimeout(() => {
