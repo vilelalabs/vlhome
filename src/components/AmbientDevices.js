@@ -4,11 +4,12 @@ import SortableGrid from 'react-native-sortable-grid'
 var getOrder = require('lodash.get');
 
 import database from '@react-native-firebase/database';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 import SingleDeviceOnAmbient from './SingleDeviceOnAmbient'
 
 
-function AmbientDevices({ ambient }) {
+function AmbientDevices({ allAmbients, ambient }) {
     const [update, setUpdate] = React.useState(true);
     const [updateValues, setUpdateValues] = React.useState(true);
 
@@ -28,6 +29,7 @@ function AmbientDevices({ ambient }) {
                     console.log("ON_value");
                     if (snapshot.val().value) {
                         setUpdate(false);
+                        /*buscar o valor a ser alterado pelo IP do mesmo device "clicado" */
                         newValue[dev.order] = snapshot.val().value;
                         dev.value = snapshot.val().value;
                         setValue(newValue);
@@ -40,7 +42,6 @@ function AmbientDevices({ ambient }) {
 
     useEffect(() => {
         autoUpdate();
-        //autoUpdate('ipAddress');
 
         return () => {
             setUpdate(true);
@@ -66,7 +67,6 @@ function AmbientDevices({ ambient }) {
         }
 
 
-
         dbRef.update({ "value": newDeviceValue });
 
         const newValue = value;
@@ -89,16 +89,28 @@ function AmbientDevices({ ambient }) {
 
         //send new ambient.devices to database
         if (ambient.devices[0].name !== 'initDevice') {
-            ambient.devices.forEach(dev => {
-                let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
-                dbRef.update({ "iconName": dev.iconName });
-                dbRef.update({ "ipAddress": dev.ipAddress });
-                dbRef.update({ "name": dev.name });
-                dbRef.update({ "value": dev.value });
-                dbRef.update({ "order": dev.order });
-                dbRef.update({ "type": dev.type });
-            });
+            const pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
+
+            const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
+            RNFetchBlob.fs
+                .writeFile(pathToWrite, JSONfile, 'utf8')
+                .then(() => {
+                    console.log(`wrote file on ${pathToWrite}`);
+
+                })
+                .catch(error => console.error(error));
+
         }
+
+        /*let dbRef = database().ref(`ambients/${ambient.order}/devices/${dev.order}/`);
+        dbRef.update({ "iconName": dev.iconName });
+        dbRef.update({ "ipAddress": dev.ipAddress });
+        dbRef.update({ "name": dev.name });
+        dbRef.update({ "value": dev.value });
+        dbRef.update({ "order": dev.order });
+        dbRef.update({ "type": dev.type });*/
+        //});
+
         return () => {
 
             setTimeout(() => {
@@ -122,7 +134,6 @@ function AmbientDevices({ ambient }) {
 
                     finalOrder.map((item) => {
                         ambient.devices[item.key].order = item.order;
-                        // linha acima não pode ser executada apos update do database
 
                     });
                     setUpdate(false);

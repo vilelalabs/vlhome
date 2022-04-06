@@ -8,7 +8,7 @@ import AmbientDevices from '../AmbientDevices';
 const backgroundAreaColor = 'white';
 const foregroundAreaColor = 'rgb(27,27,27)';
 
-const OverLayAmbient = (
+const OverLayAmbient = (allAmbients,
     ambient, handleClick, showMenu,
     scaleValue, offsetValue, closeButtonOffset) => {
 
@@ -54,6 +54,7 @@ const OverLayAmbient = (
                     ambient={ambient}
                 />
                 <AmbientDevices
+                    allAmbients={allAmbients}
                     ambient={ambient}
                 />
 

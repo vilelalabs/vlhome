@@ -10,19 +10,10 @@
           "ipAddress": "192.168.15.201"
         }
       ],
+      "id": 0,
       "iconName": "bed",
       "name": "initAmbient",
-      "order": 0,
-      "id": 0
-    }
-  ],
-  "devices": [
-    {
-      "iconName": "lightbulb",
-      "name": "initDevice",
-      "order": 0,
-      "value": "Acesa",
-      "ipAddress": "192.168.15.202"
+      "order": 0
     }
   ]
 }

@@ -1,0 +1,52 @@
+{
+    "ambients": [
+        {
+            "devices": [
+                {
+                    "iconName": "lightbulb",
+                    "ipAddress": "192.168.15.41",
+                    "name": "Lâmpada1",
+                    "order": 0,
+                    "type": "light",
+                    "value": "Apagada"
+                },
+                {
+                    "iconName": "lightbulb",
+                    "ipAddress": "192.168.15.55",
+                    "name": "Lâmpada2",
+                    "order": 1,
+                    "type": "light",
+                    "value": "Acesa"
+                }
+            ],
+            "iconName": "bed",
+            "id": 0,
+            "name": "Quarto Frente",
+            "order": 0
+        },
+        {
+            "devices": [
+                {
+                    "iconName": "fan",
+                    "ipAddress": "192.168.15.203",
+                    "name": "Ventilador",
+                    "order": 0,
+                    "type": "dimmer",
+                    "value": "no value"
+                },
+                {
+                    "iconName": "garage",
+                    "ipAddress": "192.168.15.204",
+                    "name": "Portão",
+                    "order": 1,
+                    "type": "gate",
+                    "value": "no value"
+                }
+            ],
+            "iconName": "garage",
+            "id": 1,
+            "name": "Garagem",
+            "order": 1
+        }
+    ]
+}

@@ -34,14 +34,9 @@ const foregroundAreaColor = 'rgb(27,27,27)';
 import getData from './getData';
 
 let allAmbients = [];
-let allDevices = [];
-
-// carrega ambiente provisório para inicialização não zerada das variáveis allAmbients e allDevices
+// carrega ambiente provisório para inicialização não zerada de allAmbients
 data.ambients.forEach(amb => {
   allAmbients.push(Factory('ambient', amb.id, amb.iconName, amb.name, amb.devices, amb.order));
-});
-data.devices.forEach(dev => {
-  allDevices.push(Factory('device', dev.ipAddress, dev.iconName, dev.name, dev.value, dev.order, dev.type));
 });
 
 function App() {
@@ -51,9 +46,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      let Alldata = await getData();
-      allAmbients = Alldata[0];
-      allDevices = Alldata[1];
+      allAmbients = await getData();
       setLoadScreen(false);
       setCurrentAmbient(allAmbients[0]);
     })();
@@ -124,7 +117,7 @@ function App() {
 
           {/* Over lays views...*/}
           {(overLayType === 'ambient') &&
-            OverLayAmbient(currentAmbient, handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
+            OverLayAmbient(allAmbients, currentAmbient, handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
           {(overLayType === 'config') &&
             OverLayConfig(handleMenu, showMenu, scaleValue, offsetValue, closeButtonOffset, setOverLayType)}
           {(overLayType === 'about') &&
