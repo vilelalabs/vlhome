@@ -20,7 +20,8 @@ function AmbientDevices({ allAmbients, ambient }) {
     //const [ipAddress, setIpAddress] = useState([]);
 
     async function autoUpdate() {
-        const newValue = value;
+        let newValue = value;
+        console.log('value: ', value);
         let fb_ipAddress;
         let fb_allAmbients;
 
@@ -40,9 +41,10 @@ function AmbientDevices({ allAmbients, ambient }) {
                     allAmbients.every(amb => {
                         amb.devices.every(dev => {
                             if (dev.ipAddress === fb_ipAddress) {
-                                console.log(`Valor no dispositivo com ipAddress ${dev.ipAddress} foi alterado para ${snapshot.val().value}`);
+                                //console.log(`Valor no dispositivo com ipAddress ${dev.ipAddress} foi alterado para ${snapshot.val().value}`);
                                 setUpdate(false);
                                 newValue[dev.order] = snapshot.val().value;
+                                console.log('newValue: ', newValue);
                                 dev.value = snapshot.val().value;
                                 setValue(newValue);
                                 setUpdateValues(false);
@@ -64,7 +66,7 @@ function AmbientDevices({ allAmbients, ambient }) {
             setUpdate(true);
             setUpdateValues(true);
         }
-    }, [ambient]);
+    }, [allAmbients]);
 
     function handleClick(dev) {
         let fb_ipAddress;
@@ -82,9 +84,11 @@ function AmbientDevices({ allAmbients, ambient }) {
                                 break;
                             case 'dimmer':
                                 //...
+                                newDeviceValue = (dev.value == "50%") ? "20%" : "50%";
                                 break;
                             case 'gate':
                                 //...
+                                newDeviceValue = (dev.value == "Fechado") ? "Aberto" : "Fechado";
                                 break;
                             default:
                                 break;
@@ -114,13 +118,11 @@ function AmbientDevices({ allAmbients, ambient }) {
         //send new ambient.devices to database
         if (ambient.devices[0].name !== 'initDevice') {
             const pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
-
             const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
             RNFetchBlob.fs
                 .writeFile(pathToWrite, JSONfile, 'utf8')
                 .then(() => { })
                 .catch(error => console.error(error));
-
         }
         return () => {
 
@@ -142,13 +144,10 @@ function AmbientDevices({ allAmbients, ambient }) {
             {update && <SortableGrid
                 onDragRelease={(itemOrder) => {
                     var finalOrder = getOrder(itemOrder, `itemOrder`);
-
                     finalOrder.map((item) => {
                         ambient.devices[item.key].order = item.order;
-
                     });
                     setUpdate(false);
-
                 }}
                 itemsPerRow={3}
                 dragActivationTreshold={1000} // will be 3000 in production
