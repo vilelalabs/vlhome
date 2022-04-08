@@ -113,9 +113,14 @@ function AmbientDevices({ allAmbients, ambient }) {
         })();
 
         //send new ambient.devices to database
-        if (ambient.devices[0].name !== 'initDevice') {
-            SaveFile(allAmbients);
+        try {
+            if (ambient.devices[0].name !== 'initDevice') {
+                SaveFile(allAmbients);
+            }
+        } catch (error) {
+            console.log(error);
         }
+
         return () => {
             setTimeout(() => {
                 setUpdate(true);

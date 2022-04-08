@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import SaveFile from '../../../services/SaveFile';
+
 import {
     Menu,
     MenuOptions,
@@ -47,8 +49,16 @@ function ConfigDeleteAmbientScreen({ ambients }) {
                 <TouchableOpacity disabled={Object.keys(selectedAmbient).length === 0} onPress={() => {
                     //do things...
                     // --> remover o ambiente selecionado do array de ambientes
-                    //SaveFile(ambients);
-                    alert('Exclusão Realizada com sucesso!');
+                    let index = ambients.indexOf(selectedAmbient);
+                    if (index !== -1) {
+                        ambients.splice(index, 1);
+                        SaveFile(ambients);
+                        alert('Ambiente removido com sucesso!');
+                    }
+                    else {
+                        alert('Erro ao remover ambiente! Sem modificações.');
+                    }
+
                 }}>
                     <View style={styles.buttonConfirm}>
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />

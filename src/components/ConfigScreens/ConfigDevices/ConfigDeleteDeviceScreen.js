@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import SaveFile from '../../../services/SaveFile';
+
 import {
     Menu,
     MenuOptions,
@@ -63,10 +65,16 @@ function ConfigDeleteDeviceScreen({ ambients }) {
             </View>
             <View>
                 <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
-                    //do things...
-                    // --> remover dispositivo do array de dispositivos do ambiente selecionado
-                    //SaveFile(ambients);
-                    alert('Dispositivo removido com sucesso!');
+                    let index = selectedAmbient.devices.indexOf(selectedDevice);
+                    if (index !== -1) {
+                        selectedAmbient.devices.splice(index, 1);
+                        SaveFile(ambients);
+                        alert('Dispositivo removido com sucesso!');
+                    }
+                    else {
+                        alert('Erro ao remover dispositivo! Sem modificações.');
+                    }
+
                 }}>
                     <View style={styles.buttonConfirm}>
                         <Icon name={'minus-circle'} size={28} color={'#F9943B'} />
