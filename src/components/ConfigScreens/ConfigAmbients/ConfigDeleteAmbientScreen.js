@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -13,8 +13,7 @@ import MOptionsAmbient from '../MOptionsAmbient';
 
 function ConfigDeleteAmbientScreen({ ambients }) {
 
-
-    const [selectedAmbient, setSelectedAmbient] = React.useState('');
+    const [selectedAmbient, setSelectedAmbient] = useState({});
     return (
         <View>
             <View style={styles.leftContent}>
@@ -40,14 +39,15 @@ function ConfigDeleteAmbientScreen({ ambients }) {
                     </Menu>
                 </View>
                 <View style={styles.resume}>
-                    {selectedAmbient != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
-
-                    {selectedAmbient != '' && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient}</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity disabled={selectedAmbient == ''} onPress={() => {
+                <TouchableOpacity disabled={Object.keys(selectedAmbient).length === 0} onPress={() => {
                     //do things...
+                    // --> remover o ambiente selecionado do array de ambientes
+                    //SaveFile(ambients);
                     alert('Exclusão Realizada com sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>

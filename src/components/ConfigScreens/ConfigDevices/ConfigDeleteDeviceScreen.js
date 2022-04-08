@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -12,7 +12,8 @@ import {
 import MOptionsDevice from '../MOptionsDevice';
 
 function ConfigDeleteDeviceScreen({ ambients }) {
-    const [selectedDevice, setSelectedDevice] = React.useState('');
+    const [selectedDevice, setSelectedDevice] = React.useState({});
+    const [selectedAmbient, setSelectedAmbient] = React.useState({});
     const [devices, setDevices] = React.useState([]);
     return (
         <View>
@@ -34,11 +35,12 @@ function ConfigDeleteDeviceScreen({ ambients }) {
                             <MOptionsDevice
                                 ambients={ambients}
                                 setDevices={setDevices}
+                                setSelectedAmbient={setSelectedAmbient}
                             />
                         </MenuOptions>
                     </Menu>
                     <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger disabled={devices.length === 0}>
+                        <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
                             <View style={styles.button}>
                                 <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
                                 <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
@@ -54,14 +56,16 @@ function ConfigDeleteDeviceScreen({ ambients }) {
 
                 </View>
                 <View style={styles.resume}>
-                    {selectedDevice != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
-
-                    {selectedDevice != '' && <Text style={styles.resumeText}>Excluir dispositivo: {selectedDevice}</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Excluir dispositivo: {selectedDevice.name}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity disabled={selectedDevice == ''} onPress={() => {
+                <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
                     //do things...
+                    // --> remover dispositivo do array de dispositivos do ambiente selecionado
+                    //SaveFile(ambients);
                     alert('Dispositivo removido com sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>

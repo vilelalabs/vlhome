@@ -46,7 +46,7 @@ function ConfigEditDeviceScreen({ ambients }) {
                         </MenuOptions>
                     </Menu>
                     <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger disabled={devices.length === 0}>
+                        <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
                             <View style={styles.button}>
                                 <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
                                 <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
@@ -63,7 +63,7 @@ function ConfigEditDeviceScreen({ ambients }) {
                     <View style={styles.button}>
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />
                         <TextInput
-                            editable={selectedDevice != ''}
+                            editable={Object.keys(selectedAmbient).length !== 0}
                             style={styles.buttonText}
                             onChangeText={deviceName => setDeviceName(deviceName)}
                             placeholderTextColor='#722004'
