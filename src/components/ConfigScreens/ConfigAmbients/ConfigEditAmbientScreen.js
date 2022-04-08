@@ -46,7 +46,7 @@ function ConfigEditAmbientScreen({ ambients }) {
                     <View style={styles.button}>
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />
                         <TextInput
-                            editable={selectedAmbient != ''}
+                            editable={Object.keys(selectedAmbient).length !== 0}
                             style={styles.buttonText}
                             onChangeText={ambientName => setAmbientName(ambientName)}
                             placeholderTextColor='#722004'
