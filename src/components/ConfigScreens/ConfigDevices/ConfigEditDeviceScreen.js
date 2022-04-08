@@ -63,7 +63,7 @@ function ConfigEditDeviceScreen({ ambients }) {
                     <View style={styles.button}>
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />
                         <TextInput
-                            editable={Object.keys(selectedAmbient).length !== 0}
+                            editable={Object.keys(selectedDevice).length !== 0}
                             style={styles.buttonText}
                             onChangeText={deviceName => setDeviceName(deviceName)}
                             placeholderTextColor='#722004'
@@ -75,11 +75,11 @@ function ConfigEditDeviceScreen({ ambients }) {
                     {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
                     {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
                     {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Dispositivo selecionado: {selectedDevice.name}</Text>}
-                    {deviceName != '' && <Text style={styles.resumeText}>Novo Nome: {deviceName}</Text>}
+                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Novo Nome: {deviceName}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity disabled={deviceName == ''} onPress={() => {
+                <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
 
                     selectedDevice.name = deviceName;
                     SaveFile(ambients);
