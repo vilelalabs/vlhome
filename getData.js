@@ -20,7 +20,6 @@ async function getData() {
     }
 
 
-
     if (data) {
         data.ambients.forEach(amb => {
             allAmbients.push(Factory('ambient', amb.id, amb.iconName, amb.name, amb.devices, amb.order));
@@ -37,13 +36,3 @@ async function getData() {
 }
 
 export default getData;
-
-/*
- const pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
-
-            const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
-            RNFetchBlob.fs
-                .writeFile(pathToWrite, JSONfile, 'utf8')
-                .then(() => { })
-                .catch(error => console.error(error));
-*/

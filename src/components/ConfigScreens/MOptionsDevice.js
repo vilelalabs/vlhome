@@ -6,13 +6,13 @@ import {
     MenuOption,
 } from 'react-native-popup-menu';
 
-function MOptionsDevice({ ambients, setDevices, devices, setSelectedDevice }) {
+function MOptionsDevice({ ambients, setDevices, devices, setSelectedDevice, setSelectedAmbient }) {
 
     if (ambients) {
         return ambients.map((amb, index) => {
             return (
                 <MenuOption key={index} onSelect={() => {
-                    // do things...
+                    setSelectedAmbient(amb);
                     setDevices(amb.devices);
                 }}>
                     <View style={styles.menuOptionWrapper}>
@@ -27,8 +27,7 @@ function MOptionsDevice({ ambients, setDevices, devices, setSelectedDevice }) {
         return devices.map((dev, index) => {
             return (
                 <MenuOption key={index} onSelect={() => {
-                    // do things...
-                    setSelectedDevice(dev.name);
+                    setSelectedDevice(dev);
                 }}>
                     <View style={styles.menuOptionWrapper}>
                         <Icon name={dev.iconName} size={28} color={'#000'} />

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 function SingleDeviceOnAmbient({ index, iconName, deviceName, deviceStatus }) {
-    return (    
+    return (
         <View key={index} style={styles.container}>
             <View style={styles.firstLine}>
                 <Icon name={iconName} size={18} color={'#F9943B'} />
@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 14,
         color: 'rgb(255,255,255)',
-        textAlign: 'left'
+        textAlign: 'center',
+        textAlignVertical: 'center',
     },
     textStatus: {
         fontSize: 14,
@@ -47,6 +48,12 @@ const styles = StyleSheet.create({
     firstLine: {
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 15,
+        marginRight: 15,
+
+        height: 50,
     },
     statusView: {
         alignItems: 'center',

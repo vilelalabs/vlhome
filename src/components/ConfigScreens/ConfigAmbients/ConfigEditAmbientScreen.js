@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import SaveFile from '../../../services/SaveFile';
+
 import {
     Menu,
     MenuOptions,
@@ -15,7 +17,7 @@ function ConfigEditAmbientScreen({ ambients }) {
 
     const [ambientName, setAmbientName] = React.useState('');
 
-    const [selectedAmbient, setSelectedAmbient] = React.useState('');
+    const [selectedAmbient, setSelectedAmbient] = React.useState({});
     return (
         <View>
             <View style={styles.leftContent}>
@@ -53,15 +55,16 @@ function ConfigEditAmbientScreen({ ambients }) {
                     </View>
                 </View>
                 <View style={styles.resume}>
-                    {selectedAmbient != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
 
-                    {selectedAmbient != '' && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient}</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
                     {ambientName != '' && <Text style={styles.resumeText}>Novo Nome: {ambientName}</Text>}
                 </View>
             </View>
             <View>
                 <TouchableOpacity disabled={ambientName == ''} onPress={() => {
-                    //do things...
+                    selectedAmbient.name = ambientName;
+                    SaveFile(ambients);
                     alert('Edições realizadas com sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>

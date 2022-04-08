@@ -5,7 +5,8 @@ var getOrder = require('lodash.get');
 import axios from 'axios';
 
 import database from '@react-native-firebase/database';
-import RNFetchBlob from 'react-native-fetch-blob';
+
+import SaveFile from '../services/SaveFile';
 
 import SingleDeviceOnAmbient from './SingleDeviceOnAmbient'
 
@@ -21,7 +22,6 @@ function AmbientDevices({ allAmbients, ambient }) {
 
     async function autoUpdate() {
         let newValue = value;
-        console.log('value: ', value);
         let fb_ipAddress;
         let fb_allAmbients;
 
@@ -41,10 +41,8 @@ function AmbientDevices({ allAmbients, ambient }) {
                     allAmbients.every(amb => {
                         amb.devices.every(dev => {
                             if (dev.ipAddress === fb_ipAddress) {
-                                //console.log(`Valor no dispositivo com ipAddress ${dev.ipAddress} foi alterado para ${snapshot.val().value}`);
                                 setUpdate(false);
-                                newValue[dev.order] = snapshot.val().value;
-                                console.log('newValue: ', newValue);
+                                newValue[dev.order] = snapshot.val().value; 1
                                 dev.value = snapshot.val().value;
                                 setValue(newValue);
                                 setUpdateValues(false);
@@ -108,7 +106,6 @@ function AmbientDevices({ allAmbients, ambient }) {
         });
     }
 
-
     useEffect(() => {
 
         (async () => {
@@ -117,15 +114,9 @@ function AmbientDevices({ allAmbients, ambient }) {
 
         //send new ambient.devices to database
         if (ambient.devices[0].name !== 'initDevice') {
-            const pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
-            const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
-            RNFetchBlob.fs
-                .writeFile(pathToWrite, JSONfile, 'utf8')
-                .then(() => { })
-                .catch(error => console.error(error));
+            SaveFile(allAmbients);
         }
         return () => {
-
             setTimeout(() => {
                 setUpdate(true);
             }, 300);

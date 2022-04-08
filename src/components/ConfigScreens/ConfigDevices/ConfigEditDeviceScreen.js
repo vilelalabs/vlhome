@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import SaveFile from '../../../services/SaveFile';
+
 import {
     Menu,
     MenuOptions,
@@ -13,10 +15,11 @@ import MOptionsDevice from '../MOptionsDevice';
 
 function ConfigEditDeviceScreen({ ambients }) {
 
-    
+
     const [deviceName, setDeviceName] = React.useState('');
 
-    const [selectedDevice, setSelectedDevice] = React.useState('');
+    const [selectedAmbient, setSelectedAmbient] = React.useState({});
+    const [selectedDevice, setSelectedDevice] = React.useState({});
     const [devices, setDevices] = React.useState([]);
     return (
         <View>
@@ -38,6 +41,7 @@ function ConfigEditDeviceScreen({ ambients }) {
                             <MOptionsDevice
                                 ambients={ambients}
                                 setDevices={setDevices}
+                                setSelectedAmbient={setSelectedAmbient}
                             />
                         </MenuOptions>
                     </Menu>
@@ -68,15 +72,17 @@ function ConfigEditDeviceScreen({ ambients }) {
                     </View>
                 </View>
                 <View style={styles.resume}>
-                    {selectedDevice != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
-
-                    {selectedDevice != '' && <Text style={styles.resumeText}>Dispositivo selecionado: {selectedDevice}</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Dispositivo selecionado: {selectedDevice.name}</Text>}
                     {deviceName != '' && <Text style={styles.resumeText}>Novo Nome: {deviceName}</Text>}
                 </View>
             </View>
             <View>
                 <TouchableOpacity disabled={deviceName == ''} onPress={() => {
-                    //do things...
+
+                    selectedDevice.name = deviceName;
+                    SaveFile(ambients);
                     alert('Edições realizadas com sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>

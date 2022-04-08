@@ -13,7 +13,7 @@ function MOptionsAmbient({ ambients, setDeviceAmbient }) {
         return (
             <MenuOption key={index} onSelect={() => {
                 // do things...
-                setDeviceAmbient(amb.name);
+                setDeviceAmbient(amb);
             }}>
                 <View style={styles.menuOptionWrapper}>
                     <Icon name={amb.iconName} size={28} color={'#000'} />
