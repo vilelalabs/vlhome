@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ReorderList from './ReorderList';
@@ -13,12 +13,12 @@ function ConfigReorderAmbientScreen({ ambients }) {
                 <Text style={styles.titleText}>  Reordenar Lista de Ambientes </Text>
                 <Icon name={'chevron-right'} size={24} color={'#FFF'} />
             </View>
-            <View style={{height:550, marginBottom: 20}} >
+            <View style={{ height: 550, marginBottom: 20 }} >
                 <ReorderList
                     ambients={ambients}
                 />
             </View>
-            
+
         </View>
     )
 }

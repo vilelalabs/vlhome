@@ -11,8 +11,7 @@ function LoadScreen() {
             <Text style={styles.text}>Importando dados...</Text>
             <ActivityIndicator style={{
                 marginTop: 50,
-                transform: [{ scale: 1.5 }
-                ]
+                transform: [{ scale: 1.5 }]
 
             }} size={'large'} color="#F9943B" />
         </View>

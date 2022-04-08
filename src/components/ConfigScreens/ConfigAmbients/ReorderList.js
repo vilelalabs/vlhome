@@ -10,7 +10,6 @@ const foregroundAreaColor = 'rgb(27,27,27)';
 
 function ReorderList({ ambients }) {
 
-    //const [tempList, setTempList] = useState(ambients);
     const [scrollState, setScrollState] = useState(true);
 
     return (
@@ -27,7 +26,7 @@ function ReorderList({ ambients }) {
                     finalOrder.map((item) => {
                         ambients[item.key].order = item.order;
                     });
-                        
+
                     setScrollState(true);
 
                 }}

@@ -8,7 +8,6 @@ import {
 
 function MOptionsAmbient({ ambients, setDeviceAmbient }) {
 
-
     return ambients.map((amb, index) => {
         return (
             <MenuOption key={index} onSelect={() => {
@@ -41,8 +40,5 @@ const styles = StyleSheet.create({
     },
 
 });
-
-
-
 
 export default MOptionsAmbient;

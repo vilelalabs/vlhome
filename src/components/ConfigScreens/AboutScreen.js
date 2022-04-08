@@ -22,7 +22,7 @@ function AboutScreen({ setOverLayType, showMenuState }) {
                         }}>
                         <View style={styles.link}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
-                            <Text style={styles.buttonText}>{'Desenvolvido por: Vilela Labs'}</Text>
+                            <Text style={styles.buttonText}>{'Desenv. por: Vilela Labs'}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
