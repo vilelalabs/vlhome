@@ -11,7 +11,6 @@ function MOptionsAmbient({ ambients, setDeviceAmbient }) {
     return ambients.map((amb, index) => {
         return (
             <MenuOption key={index} onSelect={() => {
-                // do things...
                 setDeviceAmbient(amb);
             }}>
                 <View style={styles.menuOptionWrapper}>
