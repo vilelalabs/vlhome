@@ -2,6 +2,10 @@ import React from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import axios from 'axios';
+
+import SaveFile from '../../../services/SaveFile';
+
 import {
     Menu,
     MenuOptions,
@@ -12,10 +16,36 @@ import MOptionsAmbient from '../MOptionsAmbient';
 
 function ConfigNewDeviceScreen({ ambients }) {
 
-    const [deviceFound, setDeviceFound] = React.useState(true);
+    const [deviceFound, setDeviceFound] = React.useState(false);
+    const [newDevice, setNewDevice] = React.useState({});
     const [deviceIP, setDeviceIP] = React.useState('');
-    const [deviceAmbient, setDeviceAmbient] = React.useState('');
+    const [selectedAmbient, setSelectedAmbient] = React.useState({});
     const [deviceName, setDeviceName] = React.useState('');
+
+    async function searchDevice() {
+        let fb_allDevices;
+        //receber todos dispositivos do firebase em um novo array
+        const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
+        if (response.data) {
+            fb_allDevices = response.data.devices;
+        }
+
+        let fb_allDevicesIps = [];
+        fb_allDevices.forEach(element => {
+            fb_allDevicesIps.push(element.ipAddress);
+        });
+        let deviceIps = [];
+        ambients.forEach(amb => {
+            amb.devices.forEach(dev => {
+                deviceIps.push(dev.ipAddress);
+            });
+        });
+
+        //get the difference between the two arrays
+        let newIp = fb_allDevicesIps.filter(x => !deviceIps.includes(x));
+        console.log(newIp);
+        return newIp;
+    }
 
     return (
         <View>
@@ -26,9 +56,18 @@ function ConfigNewDeviceScreen({ ambients }) {
             </View>
             <View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => {
-                        // IP será encontrado durante a busca do dispositivo no banco de de dados
-                        setDeviceIP('192.168.1.150'); // incluir device.ip futuramente
+                    <TouchableOpacity onPress={async () => {
+
+                        const ipAddress = await searchDevice();
+                        if (ipAddress.length > 0) {
+                            console.log(`ipAddress: ${ipAddress}`);
+                            setDeviceIP(ipAddress);
+                            setDeviceFound(true);
+                        }
+                        else {
+                            setDeviceFound(false);
+                            alert('Não há novos dispositivos disponíveis');
+                        }
                     }}>
                         <View style={styles.button}>
                             <Icon name={deviceFound ? 'checkbox-marked-circle' : 'magnify'} size={28} color={'#F9943B'} />
@@ -45,7 +84,7 @@ function ConfigNewDeviceScreen({ ambients }) {
                         <MenuOptions>
                             <MOptionsAmbient
                                 ambients={ambients}
-                                setDeviceAmbient={setDeviceAmbient}
+                                setDeviceAmbient={setSelectedAmbient}
                             />
                         </MenuOptions>
                     </Menu>
@@ -53,7 +92,7 @@ function ConfigNewDeviceScreen({ ambients }) {
                     <View style={styles.button}>
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />
                         <TextInput
-                            editable={deviceAmbient != ''}
+                            editable={Object.keys(selectedAmbient).length !== 0}
                             style={styles.buttonText}
                             onChangeText={deviceName => setDeviceName(deviceName)}
                             placeholderTextColor='#722004'
@@ -64,13 +103,39 @@ function ConfigNewDeviceScreen({ ambients }) {
                 <View style={styles.resume}>
                     {deviceFound && <Text style={styles.resumeTitle}>Resumo...</Text>}
                     {deviceIP != '' && <Text style={styles.resumeText}>IP: {deviceIP}</Text>}
-                    {deviceAmbient != '' && <Text style={styles.resumeText}>Ambiente: {deviceAmbient}</Text>}
+                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente: {selectedAmbient.name}</Text>}
                     {deviceName != '' && <Text style={styles.resumeText}>Nome: {deviceName}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity disabled={deviceName == ''} onPress={() => {
-                    //do things...
+                <TouchableOpacity disabled={deviceName == ''} onPress={async () => {
+
+                    //percorrer todos os devices no firebase e econtrar o que teve o IP isolado
+                    let fb_allDevices;
+                    let newDev;
+
+                    const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
+                    if (response.data) {
+                        fb_allDevices = response.data.devices;
+                    }
+                    fb_allDevices.forEach(element => {
+                        if (element.ipAddress == deviceIP) {
+                            newDev = element;
+                        }
+                    });
+
+                    let orderCount = 0;
+                    selectedAmbient.devices.forEach(dev => {
+                        orderCount++;
+                    });
+
+                    newDev.name = deviceName;
+                    newDev.iconName = 'lightbulb';
+                    newDev.order = orderCount;
+                    setNewDevice(newDev);
+
+                    selectedAmbient.devices.push(newDev);
+                    SaveFile(ambients);
                     alert('Dispositivo Adicionado com Sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>
