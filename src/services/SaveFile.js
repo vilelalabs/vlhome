@@ -1,11 +1,25 @@
 import RNFetchBlob from 'react-native-fetch-blob';
 
+const debug = false;
+
 function SaveFile(allAmbients) {
-    const pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
+    let pathToWrite;
+    if (!debug) {
+        pathToWrite = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
+    }
+    else {
+        pathToWrite = `${RNFetchBlob.fs.dirs.DownloadDir}/positions.json`;
+    }
+
     const JSONfile = "{\"ambients\": " + JSON.stringify(allAmbients) + "}";
     RNFetchBlob.fs
         .writeFile(pathToWrite, JSONfile, 'utf8')
-        .then(() => { })
+        .then(() => {
+
+            if (debug) {
+                console.log('File saved');
+            }
+        })
         .catch(error => console.error(error));
 }
 
