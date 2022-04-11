@@ -1,0 +1,24 @@
+{
+    "devices": [
+        {
+            "ipAddress": "192.168.15.41",
+            "type": "light",
+            "value": "Apagada"
+        },
+        {
+            "ipAddress": "192.168.15.59",
+            "type": "light",
+            "value": "Acesa"
+        },
+        {
+            "ipAddress": "192.168.15.203",
+            "type": "dimmer",
+            "value": "no value"
+        },
+        {
+            "ipAddress": "192.168.15.204",
+            "type": "gate",
+            "value": "no value"
+        }
+    ]
+}

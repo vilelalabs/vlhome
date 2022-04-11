@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import SortableGrid from 'react-native-sortable-grid'
 var getOrder = require('lodash.get');
-import axios from 'axios';
 
+import axios from 'axios';
 import database from '@react-native-firebase/database';
 
 import SaveFile from '../services/SaveFile';
+import GetValueFromFirebase from '../services/GetValueFromFirebase';
 
 import SingleDeviceOnAmbient from './SingleDeviceOnAmbient'
 
@@ -22,45 +23,15 @@ function AmbientDevices({ allAmbients, ambient }) {
 
     async function autoUpdate() {
         let newValue = value;
-        let fb_ipAddress;
-        let fb_allAmbients;
 
-        //receber todos ambientes e dispositivos do firebase em um novo array
-        const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
-        if (response.data) {
-            fb_allAmbients = response.data.ambients;
-        }
-        //ao receber modificação de 'value' do firebase, comparar com allAmbients
-        let stopSearch = false;
-        fb_allAmbients.forEach(fb_amb => {
-            fb_amb.devices.forEach(fb_dev => {
-                let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
-                dbRef.on('value', (snapshot) => {
-                    try {
-                        fb_ipAddress = snapshot.val().ipAddress;
-                    } catch (error) {
-                        fb_ipAddress = '0.0.0.0';
-                        console.log(error);
-                    }
+        const { finalSnapshot, order } = await GetValueFromFirebase(allAmbients);
 
-                    //buscar o ipAddress igual e alterando o valor do dispositivo no app.
-                    allAmbients.every(amb => {
-                        amb.devices.every(dev => {
-                            if (dev.ipAddress === fb_ipAddress) {
-                                setUpdate(false);
-                                newValue[dev.order] = snapshot.val().value;
-                                dev.value = snapshot.val().value;
-                                setValue(newValue);
-                                setUpdateValues(false);
-                                stopSearch = true;
-                            }
-                            return stopSearch;
-                        })
-                        return stopSearch;
-                    })
-                })
-            })
-        })
+        setUpdate(false);
+        newValue[order] = finalSnapshot;
+
+        setValue(newValue);
+        setUpdateValues(false);
+
     }
 
     useEffect(() => {
@@ -72,47 +43,40 @@ function AmbientDevices({ allAmbients, ambient }) {
         }
     }, [allAmbients]);
 
-    function handleClick(dev) {
-        let fb_ipAddress;
-        allAmbients.forEach(fb_amb => {
-            fb_amb.devices.forEach(fb_dev => {
-                let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
-                dbRef.once('value', (snapshot) => {
-                    try {
-                        fb_ipAddress = snapshot.val().ipAddress;
-                        console.log('FB_ADD:', fb_ipAddress);
-                        console.log('DEV ADD: ', dev.ipAddress);
-                        if (fb_ipAddress === dev.ipAddress) {
-                            let newDeviceValue = 'no value';
-                            switch (dev.type) {
-                                case 'light':
-                                    newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
-                                    break;
-                                case 'dimmer':
-                                    //...
-                                    newDeviceValue = (dev.value == "50%") ? "20%" : "50%";
-                                    break;
-                                case 'gate':
-                                    //...
-                                    newDeviceValue = (dev.value == "Fechado") ? "Aberto" : "Fechado";
-                                    break;
-                                default:
-                                    break;
-                            }
-                            dbRef.update({ "value": newDeviceValue });
-                            const newValue = value;
-                            newValue[dev.order] = newDeviceValue;
-                            dev.value = newDeviceValue;
-                            setValue(newValue);
-                            setCurrentDevice(dev);
-                            setUpdateValues(false);
-                            setUpdate(false);
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-                });
-            });
+    async function handleClick(dev) {
+        let newValue = value;
+        const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
+        if (response.data) {
+            fb_allDevices = response.data.devices;
+        }
+
+        fb_allDevices.forEach((fb_dev, index) => {
+            if (dev.ipAddress === fb_dev.ipAddress) {
+                let dbRef = database().ref(`devices/${index}/`);
+                let newDeviceValue = 'no value';
+                switch (dev.type) {
+                    case 'light':
+                        newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
+                        break;
+                    case 'dimmer':
+                        //...
+                        newDeviceValue = (dev.value == "50%") ? "20%" : "50%";
+                        break;
+                    case 'gate':
+                        //...
+                        newDeviceValue = (dev.value == "Fechado") ? "Aberto" : "Fechado";
+                        break;
+                    default:
+                        break;
+                }
+                dbRef.update({ "value": newDeviceValue });
+                dev.value = newDeviceValue;
+                newValue[dev.order] = newDeviceValue;
+                setCurrentDevice(dev);
+                setValue(newValue);
+                setUpdateValues(false);
+                setUpdate(false);
+            }
         });
     }
 

@@ -2,6 +2,9 @@ import React from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import Ambient from '../../../logic_components/Ambient';
+import SaveFile from '../../../services/SaveFile';
+
 function ConfigNewAmbientScreen({ ambients }) {
 
     const [ambientName, setAmbientName] = React.useState('');
@@ -27,13 +30,19 @@ function ConfigNewAmbientScreen({ ambients }) {
                 </View>
                 <View style={styles.resume}>
                     {ambientName != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
-                    
+
                     {ambientName != '' && <Text style={styles.resumeText}>Novo ambiente: {ambientName}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity  disabled={ambientName == ''} onPress={() => {
+                <TouchableOpacity disabled={ambientName == ''} onPress={() => {
                     //do things...
+                    const newAmbient = new Ambient(ambients.length, 'garage', ambientName, [], ambients.length);
+                    console.log(newAmbient);
+                    //colocar array no ambiente
+                    ambients.push(newAmbient);
+                    // salvar no arquivo
+                    SaveFile(ambients);
                     alert('Ambiente Adicionado com Sucesso!');
                 }}>
                     <View style={styles.buttonConfirm}>
