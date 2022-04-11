@@ -36,13 +36,19 @@ function AmbientDevices({ allAmbients, ambient }) {
             fb_amb.devices.forEach(fb_dev => {
                 let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
                 dbRef.on('value', (snapshot) => {
-                    fb_ipAddress = snapshot.val().ipAddress;
+                    try {
+                        fb_ipAddress = snapshot.val().ipAddress;
+                    } catch (error) {
+                        fb_ipAddress = '0.0.0.0';
+                        console.log(error);
+                    }
+
                     //buscar o ipAddress igual e alterando o valor do dispositivo no app.
                     allAmbients.every(amb => {
                         amb.devices.every(dev => {
                             if (dev.ipAddress === fb_ipAddress) {
                                 setUpdate(false);
-                                newValue[dev.order] = snapshot.val().value; 1
+                                newValue[dev.order] = snapshot.val().value;
                                 dev.value = snapshot.val().value;
                                 setValue(newValue);
                                 setUpdateValues(false);
@@ -72,34 +78,38 @@ function AmbientDevices({ allAmbients, ambient }) {
             fb_amb.devices.forEach(fb_dev => {
                 let dbRef = database().ref(`ambients/${fb_amb.order}/devices/${fb_dev.order}/`);
                 dbRef.once('value', (snapshot) => {
-                    fb_ipAddress = snapshot.val().ipAddress;
-
-                    if (fb_ipAddress === dev.ipAddress) {
-                        let newDeviceValue = 'no value';
-                        switch (dev.type) {
-                            case 'light':
-                                newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
-                                break;
-                            case 'dimmer':
-                                //...
-                                newDeviceValue = (dev.value == "50%") ? "20%" : "50%";
-                                break;
-                            case 'gate':
-                                //...
-                                newDeviceValue = (dev.value == "Fechado") ? "Aberto" : "Fechado";
-                                break;
-                            default:
-                                break;
+                    try {
+                        fb_ipAddress = snapshot.val().ipAddress;
+                        console.log('FB_ADD:', fb_ipAddress);
+                        console.log('DEV ADD: ', dev.ipAddress);
+                        if (fb_ipAddress === dev.ipAddress) {
+                            let newDeviceValue = 'no value';
+                            switch (dev.type) {
+                                case 'light':
+                                    newDeviceValue = (dev.value == "Apagada") ? "Acesa" : "Apagada";
+                                    break;
+                                case 'dimmer':
+                                    //...
+                                    newDeviceValue = (dev.value == "50%") ? "20%" : "50%";
+                                    break;
+                                case 'gate':
+                                    //...
+                                    newDeviceValue = (dev.value == "Fechado") ? "Aberto" : "Fechado";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            dbRef.update({ "value": newDeviceValue });
+                            const newValue = value;
+                            newValue[dev.order] = newDeviceValue;
+                            dev.value = newDeviceValue;
+                            setValue(newValue);
+                            setCurrentDevice(dev);
+                            setUpdateValues(false);
+                            setUpdate(false);
                         }
-                        dbRef.update({ "value": newDeviceValue });
-
-                        const newValue = value;
-                        newValue[dev.order] = newDeviceValue;
-                        dev.value = newDeviceValue;
-                        setValue(newValue);
-                        setCurrentDevice(dev);
-                        setUpdateValues(false);
-                        setUpdate(false);
+                    } catch (error) {
+                        console.log(error);
                     }
                 });
             });
