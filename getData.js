@@ -1,9 +1,8 @@
 import Factory from './src/logic_components/Factory';
 
 import RNFetchBlob from 'react-native-fetch-blob';
-//let initData = require('./src/logic_components/initData.json');
+
 let initData = require('./positions.json');
-//import data from './positions.json'
 let data = initData;
 async function getData() {
     let allAmbients = [];
@@ -18,7 +17,6 @@ async function getData() {
         console.log(error);
         console.log('File not found');
     }
-
 
     if (data) {
         data.ambients.forEach(amb => {
