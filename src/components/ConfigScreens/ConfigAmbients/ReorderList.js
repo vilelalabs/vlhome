@@ -3,6 +3,8 @@ import { ScrollView, Text, StyleSheet } from 'react-native'
 
 import SortableGrid from 'react-native-sortable-grid'
 
+import SaveFile from '../../../services/SaveFile';
+
 var getOrder = require('lodash.get');
 
 const backgroundAreaColor = 'white';
@@ -26,7 +28,7 @@ function ReorderList({ ambients }) {
                     finalOrder.map((item) => {
                         ambients[item.key].order = item.order;
                     });
-
+                    SaveFile(ambients);
                     setScrollState(true);
 
                 }}
