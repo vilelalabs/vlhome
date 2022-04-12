@@ -1,12 +1,13 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ViewNativeComponent from 'react-native/Libraries/Components/View/ViewNativeComponent';
+
+
 
 
 function AboutScreen({ setOverLayType, showMenuState }) {
 
-
+    ''
     return (
         <View>
             <View style={styles.leftContent}>
@@ -18,7 +19,7 @@ function AboutScreen({ setOverLayType, showMenuState }) {
                 <View style={styles.upperView}>
                     <TouchableOpacity
                         onPress={() => {
-                            alert('Precisa mesmo de um botão aqui?');
+                            Linking.openURL('http://hvilela.com/vlhomeapp');
                         }}>
                         <View style={styles.link}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
@@ -27,7 +28,7 @@ function AboutScreen({ setOverLayType, showMenuState }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            alert('Easter egg ???');
+                            alert('Quantas vezes você consegue clicar em um segundo?');
                         }}>
                         <View style={styles.link}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
@@ -37,7 +38,7 @@ function AboutScreen({ setOverLayType, showMenuState }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            alert('Ir para... hvilela.com/engenharia/iothome/termosecondições');
+                            Linking.openURL('http://hvilela.com/vlhomeapp/termos');
                         }}>
                         <View style={styles.link}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
@@ -46,21 +47,18 @@ function AboutScreen({ setOverLayType, showMenuState }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            alert('⭐ React Native\n' +
-                                '⭐ NodeJS\n' +
-                                '⭐ PlatformIO\n' +
-                                '⭐ ');
+                            Linking.openURL('http://hvilela.com');
                         }}>
                         <View style={styles.link}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
-                            <Text style={styles.buttonText}>{'Ir para... hvilela.com/engenharia/iothome/tecnologiasedesenvolvimento'}</Text>
+                            <Text style={styles.buttonText}>{'Site do Desenvolvedor'}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View >
                     <TouchableOpacity
                         onPress={() => {
-                            alert('Ir para... hvilela.com/engenharia/iothome/ajuda');
+                            Linking.openURL('http://hvilela.com/vlhomeapp/ajuda');
                         }}>
                         <View style={styles.button}>
                             <Icon name={'information'} size={28} color={'#F9943B'} />
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#F9943B',
-        fontSize: 24,
+        fontSize: 22,
         marginLeft: 10,
     },
     configMenu: {
