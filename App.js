@@ -55,7 +55,7 @@ function App() {
 
   const [currentTab, setCurrentTab] = useState("Home");
 
-  const [overLayType, setOverLayType] = useState('ambient'); //set for tests opening this screen first
+  const [overLayType, setOverLayType] = useState('configNewAmbient'); //set for tests opening this screen first
   const [showMenu, setShowMenu] = useState(false);
 
   //Animated Properties...

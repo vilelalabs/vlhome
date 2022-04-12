@@ -5,9 +5,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ambient from '../../../logic_components/Ambient';
 import SaveFile from '../../../services/SaveFile';
 
+import IconSelection from './IconSelection';
+
 function ConfigNewAmbientScreen({ ambients }) {
 
     const [ambientName, setAmbientName] = React.useState('');
+    const [ambientIcon, setAmbientIcon] = React.useState('');
 
     return (
         <View>
@@ -27,18 +30,22 @@ function ConfigNewAmbientScreen({ ambients }) {
                             placeholder={'Definir Nome do Ambiente'}
                         />
                     </View>
+                    <View style={styles.icons} >
+                        <IconSelection
+                            setAmbientIcon={setAmbientIcon}
+                        />
+                    </View>
                 </View>
                 <View style={styles.resume}>
                     {ambientName != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
 
                     {ambientName != '' && <Text style={styles.resumeText}>Novo ambiente: {ambientName}</Text>}
+                    {ambientIcon != '' && <Text style={styles.resumeText}>Ícone selecionado: {ambientIcon}</Text>}
                 </View>
             </View>
             <View>
-                <TouchableOpacity disabled={ambientName == ''} onPress={() => {
-                    //do things...
-                    const newAmbient = new Ambient(ambients.length, 'garage', ambientName, [], ambients.length);
-                    console.log(newAmbient);
+                <TouchableOpacity disabled={(ambientName == '' || ambientIcon == '')} onPress={() => {
+                    const newAmbient = new Ambient(ambients.length, ambientIcon, ambientName, [], ambients.length);
                     //colocar array no ambiente
                     ambients.push(newAmbient);
                     // salvar no arquivo
@@ -127,6 +134,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         color: '#FFF',
         fontSize: 18,
+    },
+    icons: {
+        marginTop: 10,
     },
     buttonConfirm: {
         backgroundColor: '#000000',
