@@ -1,8 +1,9 @@
 # Vilela Labs Home App
 Aplicativo para controle dos dispositivos de automação residencial do projeto [Vilela Labs Home Automation](https://hvilela.com/vlhomeapp).
 
-
+<p align="center">
 <img src="img\vlhomeapp_img1.JPG" alt="drawing" width="100"/>
+</p>
 
 
 # Projeto
