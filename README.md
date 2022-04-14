@@ -16,6 +16,8 @@ De forma geral o aplicativo irá enviar requsições REST API (via **axios**) ou
 
 Além disso o aplicativo conta com telas de configurações dos **dispositivos** e **ambientes**.
 
+O App salva a estrutura de Ambientes e Dispositivos no próprio smartphone, portanto cada aparelho pode ter umas próprias configurações de nomes de dispositivos e disposição visual dos mesmo, além de poderem adicionar ou remover os dispositivos que desejarem ter ou não listados.
+
 ## Dispositivos
 Os dispositivos são os equipamentos em si conectados na rede local da residência e no firebase através de biblioteca dedicada. Tando no lado do Firebase como do próprio firmware de dispositivo ele possuirá as propriedades:
 - **ipAddress** (IP do dispositivo e usado como ID único);
@@ -37,6 +39,7 @@ Ambientes são estruturas utilizadas apenas pelo App. Servem para organizar os d
 - **id** (identificação única para o ambiente);
 - **name** (nome para visualização no app);
 - **order** (define a ordem para exibição dos ambientes no menu lateral);
+
 
 ## Estruturas JSON
 Conforme as propriedades citadas acima, neste projeto temos duas estruturas básicas para representação dos dispositivos. Abaixo um exemplo básico dessas estruturas:
