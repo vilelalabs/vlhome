@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import SaveFile from '../../../services/SaveFile';
@@ -22,63 +22,64 @@ function ConfigEditDeviceScreen({ ambients }) {
     const [selectedDevice, setSelectedDevice] = React.useState({});
     const [devices, setDevices] = React.useState([]);
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'pencil'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Editar Dispositivos </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View>
-                <View style={styles.buttonContainer}>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger >
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Ambiente</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsDevice
-                                ambients={ambients}
-                                setDevices={setDevices}
-                                setSelectedAmbient={setSelectedAmbient}
-                            />
-                        </MenuOptions>
-                    </Menu>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsDevice
-                                devices={devices}
-                                setSelectedDevice={setSelectedDevice}
-                            />
-                        </MenuOptions>
-                    </Menu>
+        <View style={{ paddingBottom: 250 }}>
+            <ScrollView >
+                <View style={styles.leftContent}>
+                    <Icon name={'pencil'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Editar Dispositivos </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
+                </View>
+                <View>
+                    <View style={styles.buttonContainer}>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger >
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Ambiente</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsDevice
+                                    ambients={ambients}
+                                    setDevices={setDevices}
+                                    setSelectedAmbient={setSelectedAmbient}
+                                />
+                            </MenuOptions>
+                        </Menu>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsDevice
+                                    devices={devices}
+                                    setSelectedDevice={setSelectedDevice}
+                                />
+                            </MenuOptions>
+                        </Menu>
 
-                    <View style={styles.button}>
-                        <Icon name={'pencil'} size={28} color={'#F9943B'} />
-                        <TextInput
-                            editable={Object.keys(selectedDevice).length !== 0}
-                            style={styles.buttonText}
-                            onChangeText={deviceName => setDeviceName(deviceName)}
-                            placeholderTextColor='#722004'
-                            placeholder={'Definir Novo Nome...'}
-                        />
+                        <View style={styles.button}>
+                            <Icon name={'pencil'} size={28} color={'#F9943B'} />
+                            <TextInput
+                                editable={Object.keys(selectedDevice).length !== 0}
+                                style={styles.buttonText}
+                                onChangeText={deviceName => setDeviceName(deviceName)}
+                                placeholderTextColor='#722004'
+                                placeholder={'Definir Novo Nome...'}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.resume}>
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                        {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Dispositivo selecionado: {selectedDevice.name}</Text>}
+                        {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Novo Nome: {deviceName}</Text>}
                     </View>
                 </View>
-                <View style={styles.resume}>
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
-                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Dispositivo selecionado: {selectedDevice.name}</Text>}
-                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Novo Nome: {deviceName}</Text>}
-                </View>
-            </View>
-            <View>
+
                 <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
 
                     selectedDevice.name = deviceName;
@@ -89,8 +90,10 @@ function ConfigEditDeviceScreen({ ambients }) {
                         <Icon name={'pencil'} size={28} color={'#F9943B'} />
                         <Text style={styles.buttonText}>{'Confirmar Edição'}</Text>
                     </View>
+
                 </TouchableOpacity>
-            </View>
+
+            </ScrollView>
         </View>
     )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ReorderList from './ReorderList';
@@ -7,18 +7,20 @@ import ReorderList from './ReorderList';
 function ConfigReorderAmbientScreen({ ambients }) {
 
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'plus-circle'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Reordenar Lista de Ambientes </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View style={{ height: 550, marginBottom: 20 }} >
-                <ReorderList
-                    ambients={ambients}
-                />
-            </View>
+        <View style={{ paddingBottom: 150 }}>
+            <ScrollView>
 
+                <View style={styles.leftContent}>
+                    <Icon name={'plus-circle'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Reordenar Lista de Ambientes </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
+                </View>
+                <View style={{ height: 550, marginBottom: 20 }} >
+                    <ReorderList
+                        ambients={ambients}
+                    />
+                </View>
+            </ScrollView>
         </View>
     )
 }

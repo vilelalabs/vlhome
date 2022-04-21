@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import SaveFile from '../../../services/SaveFile';
@@ -19,60 +19,63 @@ function ConfigEditAmbientScreen({ ambients }) {
 
     const [selectedAmbient, setSelectedAmbient] = React.useState({});
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'pencil'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Editar Ambientes </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View>
-                <View style={styles.buttonContainer}>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger >
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Ambiente</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsAmbient
-                                ambients={ambients}
-                                setDeviceAmbient={setSelectedAmbient}
+        <View style={{ paddingBottom: 150 }}>
+            <ScrollView>
+
+                <View style={styles.leftContent}>
+                    <Icon name={'pencil'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Editar Ambientes </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
+                </View>
+                <View>
+                    <View style={styles.buttonContainer}>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger >
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Ambiente</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsAmbient
+                                    ambients={ambients}
+                                    setDeviceAmbient={setSelectedAmbient}
+                                />
+                            </MenuOptions>
+                        </Menu>
+
+
+                        <View style={styles.button}>
+                            <Icon name={'pencil'} size={28} color={'#F9943B'} />
+                            <TextInput
+                                editable={Object.keys(selectedAmbient).length !== 0}
+                                style={styles.buttonText}
+                                onChangeText={ambientName => setAmbientName(ambientName)}
+                                placeholderTextColor='#722004'
+                                placeholder={'Definir Novo Nome...'}
                             />
-                        </MenuOptions>
-                    </Menu>
+                        </View>
+                    </View>
+                    <View style={styles.resume}>
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
 
-
-                    <View style={styles.button}>
-                        <Icon name={'pencil'} size={28} color={'#F9943B'} />
-                        <TextInput
-                            editable={Object.keys(selectedAmbient).length !== 0}
-                            style={styles.buttonText}
-                            onChangeText={ambientName => setAmbientName(ambientName)}
-                            placeholderTextColor='#722004'
-                            placeholder={'Definir Novo Nome...'}
-                        />
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                        {ambientName != '' && <Text style={styles.resumeText}>Novo Nome: {ambientName}</Text>}
                     </View>
                 </View>
-                <View style={styles.resume}>
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
-
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
-                    {ambientName != '' && <Text style={styles.resumeText}>Novo Nome: {ambientName}</Text>}
+                <View>
+                    <TouchableOpacity disabled={ambientName == ''} onPress={() => {
+                        selectedAmbient.name = ambientName;
+                        SaveFile(ambients);
+                        alert('Edições realizadas com sucesso!');
+                    }}>
+                        <View style={styles.buttonConfirm}>
+                            <Icon name={'pencil'} size={28} color={'#F9943B'} />
+                            <Text style={styles.buttonText}>{'Confirmar Edição'}</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-            </View>
-            <View>
-                <TouchableOpacity disabled={ambientName == ''} onPress={() => {
-                    selectedAmbient.name = ambientName;
-                    SaveFile(ambients);
-                    alert('Edições realizadas com sucesso!');
-                }}>
-                    <View style={styles.buttonConfirm}>
-                        <Icon name={'pencil'} size={28} color={'#F9943B'} />
-                        <Text style={styles.buttonText}>{'Confirmar Edição'}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+            </ScrollView>
         </View>
     )
 }

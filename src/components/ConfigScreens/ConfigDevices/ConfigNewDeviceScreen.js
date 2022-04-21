@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import axios from 'axios';
@@ -47,13 +47,15 @@ function ConfigNewDeviceScreen({ ambients }) {
     }
 
     return (
-        <View>
+
+
+        <View style={{ paddingBottom: 375 }}>
             <View style={styles.leftContent}>
                 <Icon name={'plus-circle'} size={24} color={'#FFF'} />
                 <Text style={styles.titleText}>  Adicionar Novo Dispositivo </Text>
                 <Icon name={'chevron-right'} size={24} color={'#FFF'} />
             </View>
-            <View>
+            <ScrollView>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity onPress={async () => {
 
@@ -107,7 +109,7 @@ function ConfigNewDeviceScreen({ ambients }) {
                     {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente: {selectedAmbient.name}</Text>}
                     {deviceName != '' && <Text style={styles.resumeText}>Nome: {deviceName}</Text>}
                 </View>
-            </View>
+            </ScrollView>
             <View>
                 <TouchableOpacity disabled={deviceName == ''} onPress={async () => {
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Ambient from '../../../logic_components/Ambient';
@@ -13,51 +13,54 @@ function ConfigNewAmbientScreen({ ambients }) {
     const [ambientIcon, setAmbientIcon] = React.useState('');
 
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'plus-circle'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Adicionar Novo Ambiente </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View>
-                <View style={styles.buttonContainer}>
-                    <View style={styles.button}>
-                        <Icon name={'pencil'} size={28} color={'#F9943B'} />
-                        <TextInput
-                            style={styles.buttonText}
-                            onChangeText={ambientName => setAmbientName(ambientName)}
-                            placeholderTextColor='#722004'
-                            placeholder={'Definir Nome do Ambiente'}
-                        />
-                    </View>
-                    <View style={styles.icons} >
-                        <IconSelection
-                            setAmbientIcon={setAmbientIcon}
-                        />
-                    </View>
-                </View>
-                <View style={styles.resume}>
-                    {ambientName != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
+        <View style={{ paddingBottom: 150 }}>
+            <ScrollView>
 
-                    {ambientName != '' && <Text style={styles.resumeText}>Novo ambiente: {ambientName}</Text>}
-                    {ambientIcon != '' && <Text style={styles.resumeText}>Ícone selecionado: {ambientIcon}</Text>}
+                <View style={styles.leftContent}>
+                    <Icon name={'plus-circle'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Adicionar Novo Ambiente </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
                 </View>
-            </View>
-            <View>
-                <TouchableOpacity disabled={(ambientName == '' || ambientIcon == '')} onPress={() => {
-                    const newAmbient = new Ambient(ambients.length, ambientIcon, ambientName, [], ambients.length);
-                    //colocar array no ambiente
-                    ambients.push(newAmbient);
-                    // salvar no arquivo
-                    SaveFile(ambients);
-                    alert('Ambiente Adicionado com Sucesso!');
-                }}>
-                    <View style={styles.buttonConfirm}>
-                        <Icon name={'plus-circle'} size={28} color={'#F9943B'} />
-                        <Text style={styles.buttonText}>{'Adicionar'}</Text>
+                <View>
+                    <View style={styles.buttonContainer}>
+                        <View style={styles.button}>
+                            <Icon name={'pencil'} size={28} color={'#F9943B'} />
+                            <TextInput
+                                style={styles.buttonText}
+                                onChangeText={ambientName => setAmbientName(ambientName)}
+                                placeholderTextColor='#722004'
+                                placeholder={'Definir Nome do Ambiente'}
+                            />
+                        </View>
+                        <View style={styles.icons} >
+                            <IconSelection
+                                setAmbientIcon={setAmbientIcon}
+                            />
+                        </View>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <View style={styles.resume}>
+                        {ambientName != '' && <Text style={styles.resumeTitle}>Resumo...</Text>}
+
+                        {ambientName != '' && <Text style={styles.resumeText}>Novo ambiente: {ambientName}</Text>}
+                        {ambientIcon != '' && <Text style={styles.resumeText}>Ícone selecionado: {ambientIcon}</Text>}
+                    </View>
+                </View>
+                <View>
+                    <TouchableOpacity disabled={(ambientName == '' || ambientIcon == '')} onPress={() => {
+                        const newAmbient = new Ambient(ambients.length, ambientIcon, ambientName, [], ambients.length);
+                        //colocar array no ambiente
+                        ambients.push(newAmbient);
+                        // salvar no arquivo
+                        SaveFile(ambients);
+                        alert('Ambiente Adicionado com Sucesso!');
+                    }}>
+                        <View style={styles.buttonConfirm}>
+                            <Icon name={'plus-circle'} size={28} color={'#F9943B'} />
+                            <Text style={styles.buttonText}>{'Adicionar'}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </View>
     )
 }

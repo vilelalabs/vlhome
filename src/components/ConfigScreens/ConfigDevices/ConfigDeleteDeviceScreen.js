@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import SaveFile from '../../../services/SaveFile';
@@ -18,70 +18,72 @@ function ConfigDeleteDeviceScreen({ ambients }) {
     const [selectedAmbient, setSelectedAmbient] = React.useState({});
     const [devices, setDevices] = React.useState([]);
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'minus-circle'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Remover Dispositivo </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View>
-                <View style={styles.buttonContainer}>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger >
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Ambiente</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsDevice
-                                ambients={ambients}
-                                setDevices={setDevices}
-                                setSelectedAmbient={setSelectedAmbient}
-                            />
-                        </MenuOptions>
-                    </Menu>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsDevice
-                                devices={devices}
-                                setSelectedDevice={setSelectedDevice}
-                            />
-                        </MenuOptions>
-                    </Menu>
-
+        <View style={{ paddingBottom: 250 }}>
+            <ScrollView >
+                <View style={styles.leftContent}>
+                    <Icon name={'minus-circle'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Remover Dispositivo </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
                 </View>
-                <View style={styles.resume}>
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
-                    {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Excluir dispositivo: {selectedDevice.name}</Text>}
-                </View>
-            </View>
-            <View>
-                <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
-                    let index = selectedAmbient.devices.indexOf(selectedDevice);
-                    if (index !== -1) {
-                        selectedAmbient.devices.splice(index, 1);
-                        SaveFile(ambients);
-                        alert('Dispositivo removido com sucesso!');
-                    }
-                    else {
-                        alert('Erro ao remover dispositivo! Sem modificações.');
-                    }
+                <View>
+                    <View style={styles.buttonContainer}>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger >
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Ambiente</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsDevice
+                                    ambients={ambients}
+                                    setDevices={setDevices}
+                                    setSelectedAmbient={setSelectedAmbient}
+                                />
+                            </MenuOptions>
+                        </Menu>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger disabled={Object.keys(selectedAmbient).length === 0}>
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Dispositivo</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsDevice
+                                    devices={devices}
+                                    setSelectedDevice={setSelectedDevice}
+                                />
+                            </MenuOptions>
+                        </Menu>
 
-                }}>
-                    <View style={styles.buttonConfirm}>
-                        <Icon name={'minus-circle'} size={28} color={'#F9943B'} />
-                        <Text style={styles.buttonText}>{'Confirmar Exclusão'}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <View style={styles.resume}>
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                        {Object.keys(selectedDevice).length !== 0 && <Text style={styles.resumeText}>Excluir dispositivo: {selectedDevice.name}</Text>}
+                    </View>
+                </View>
+                <View>
+                    <TouchableOpacity disabled={Object.keys(selectedDevice).length === 0} onPress={() => {
+                        let index = selectedAmbient.devices.indexOf(selectedDevice);
+                        if (index !== -1) {
+                            selectedAmbient.devices.splice(index, 1);
+                            SaveFile(ambients);
+                            alert('Dispositivo removido com sucesso!');
+                        }
+                        else {
+                            alert('Erro ao remover dispositivo! Sem modificações.');
+                        }
+
+                    }}>
+                        <View style={styles.buttonConfirm}>
+                            <Icon name={'minus-circle'} size={28} color={'#F9943B'} />
+                            <Text style={styles.buttonText}>{'Confirmar Exclusão'}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </View>
     )
 }

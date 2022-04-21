@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import SaveFile from '../../../services/SaveFile';
@@ -17,55 +17,58 @@ function ConfigDeleteAmbientScreen({ ambients }) {
 
     const [selectedAmbient, setSelectedAmbient] = useState({});
     return (
-        <View>
-            <View style={styles.leftContent}>
-                <Icon name={'pencil'} size={24} color={'#FFF'} />
-                <Text style={styles.titleText}>  Remover Ambiente </Text>
-                <Icon name={'chevron-right'} size={24} color={'#FFF'} />
-            </View>
-            <View >
-                <View style={styles.buttonContainer}>
-                    <Menu renderer={renderers.SlideInMenu}>
-                        <MenuTrigger >
-                            <View style={styles.button}>
-                                <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
-                                <Text style={styles.buttonText}>Selecionar Ambiente</Text>
-                            </View>
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MOptionsAmbient
-                                ambients={ambients}
-                                setDeviceAmbient={setSelectedAmbient}
-                            />
-                        </MenuOptions>
-                    </Menu>
-                </View>
-                <View style={styles.resume}>
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
-                    {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
-                </View>
-            </View>
-            <View>
-                <TouchableOpacity disabled={Object.keys(selectedAmbient).length === 0} onPress={() => {
-                    //do things...
-                    // --> remover o ambiente selecionado do array de ambientes
-                    let index = ambients.indexOf(selectedAmbient);
-                    if (index !== -1) {
-                        ambients.splice(index, 1);
-                        SaveFile(ambients);
-                        alert('Ambiente removido com sucesso!');
-                    }
-                    else {
-                        alert('Erro ao remover ambiente! Sem modificações.');
-                    }
+        <View style={{ paddingBottom: 150 }}>
+            <ScrollView>
 
-                }}>
-                    <View style={styles.buttonConfirm}>
-                        <Icon name={'pencil'} size={28} color={'#F9943B'} />
-                        <Text style={styles.buttonText}>{'Confirmar Exclusão'}</Text>
+                <View style={styles.leftContent}>
+                    <Icon name={'pencil'} size={24} color={'#FFF'} />
+                    <Text style={styles.titleText}>  Remover Ambiente </Text>
+                    <Icon name={'chevron-right'} size={24} color={'#FFF'} />
+                </View>
+                <View >
+                    <View style={styles.buttonContainer}>
+                        <Menu renderer={renderers.SlideInMenu}>
+                            <MenuTrigger >
+                                <View style={styles.button}>
+                                    <Icon name={'dots-horizontal-circle-outline'} size={28} color={'#F9943B'} />
+                                    <Text style={styles.buttonText}>Selecionar Ambiente</Text>
+                                </View>
+                            </MenuTrigger>
+                            <MenuOptions>
+                                <MOptionsAmbient
+                                    ambients={ambients}
+                                    setDeviceAmbient={setSelectedAmbient}
+                                />
+                            </MenuOptions>
+                        </Menu>
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <View style={styles.resume}>
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeTitle}>Resumo...</Text>}
+                        {Object.keys(selectedAmbient).length !== 0 && <Text style={styles.resumeText}>Ambiente selecionado: {selectedAmbient.name}</Text>}
+                    </View>
+                </View>
+                <View>
+                    <TouchableOpacity disabled={Object.keys(selectedAmbient).length === 0} onPress={() => {
+                        //do things...
+                        // --> remover o ambiente selecionado do array de ambientes
+                        let index = ambients.indexOf(selectedAmbient);
+                        if (index !== -1) {
+                            ambients.splice(index, 1);
+                            SaveFile(ambients);
+                            alert('Ambiente removido com sucesso!');
+                        }
+                        else {
+                            alert('Erro ao remover ambiente! Sem modificações.');
+                        }
+
+                    }}>
+                        <View style={styles.buttonConfirm}>
+                            <Icon name={'pencil'} size={28} color={'#F9943B'} />
+                            <Text style={styles.buttonText}>{'Confirmar Exclusão'}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </View>
     )
 }
