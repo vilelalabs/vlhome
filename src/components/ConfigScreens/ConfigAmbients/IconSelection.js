@@ -17,7 +17,7 @@ function IconSelection({ setAmbientIcon }) {
             <IconButton iconName='bed' setAmbientIcon={setAmbientIcon} />
             <IconButton iconName='sofa-single' setAmbientIcon={setAmbientIcon} />
             <IconButton iconName='shower-head' setAmbientIcon={setAmbientIcon} />
-            <IconButton iconName='bed' setAmbientIcon={setAmbientIcon} />
+            <IconButton iconName='table-furniture' setAmbientIcon={setAmbientIcon} />
             <IconButton iconName='fridge' setAmbientIcon={setAmbientIcon} />
         </View>
     )
