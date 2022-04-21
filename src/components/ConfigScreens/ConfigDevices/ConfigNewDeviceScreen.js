@@ -43,8 +43,7 @@ function ConfigNewDeviceScreen({ ambients }) {
 
         //get the difference between the two arrays
         let newIp = fb_allDevicesIps.filter(x => !deviceIps.includes(x));
-        console.log(newIp);
-        return newIp;
+        return newIp[0];
     }
 
     return (
@@ -59,10 +58,11 @@ function ConfigNewDeviceScreen({ ambients }) {
                     <TouchableOpacity onPress={async () => {
 
                         const ipAddress = await searchDevice();
-                        if (ipAddress.length > 0) {
-                            console.log(`ipAddress: ${ipAddress}`);
-                            setDeviceIP(ipAddress);
-                            setDeviceFound(true);
+                        if (ipAddress) {
+                            if (ipAddress.length > 0) {
+                                setDeviceIP(ipAddress);
+                                setDeviceFound(true);
+                            }
                         }
                         else {
                             setDeviceFound(false);
@@ -95,6 +95,7 @@ function ConfigNewDeviceScreen({ ambients }) {
                             editable={Object.keys(selectedAmbient).length !== 0}
                             style={styles.buttonText}
                             onChangeText={deviceName => setDeviceName(deviceName)}
+                            value={deviceName}
                             placeholderTextColor='#722004'
                             placeholder={'Definir Nome do Dispositivo'}
                         />
@@ -137,6 +138,13 @@ function ConfigNewDeviceScreen({ ambients }) {
                     selectedAmbient.devices.push(newDev);
                     SaveFile(ambients);
                     alert('Dispositivo Adicionado com Sucesso!');
+
+                    setDeviceFound(false);
+                    setSelectedAmbient({});
+                    setDeviceName('');
+                    setDeviceIP('');
+
+
                 }}>
                     <View style={styles.buttonConfirm}>
                         <Icon name={'plus-circle'} size={28} color={'#F9943B'} />
