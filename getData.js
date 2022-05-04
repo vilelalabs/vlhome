@@ -6,8 +6,6 @@ let initData = require('./positions.json');
 let data = initData;
 async function getData() {
     let allAmbients = [];
-    //const response = await axios.get('https://testeesp8266-ef2ce-default-rtdb.firebaseio.com/.json');
-
     //read data with RNFetchBlob
     const pathToRead = `${RNFetchBlob.fs.dirs.DocumentDir}/positions.json`;
     try {
