@@ -1,50 +1,54 @@
 # Vilela Labs Home App
-Aplicativo para controle dos dispositivos de automação residencial do projeto [Vilela Labs Home Automation](https://hvilela.com/vlhomeapp).
+Application that controls home automation devices of [Vilela Labs Home Automation](https://hvilela.com/vlhomeapp) project.
 
 <p align="center">
 <img src="img\vlhomeapp_img1.JPG" alt="drawing" width="100"/>
 </p>
 
 
-# Projeto
+# Project
 
-Esta é uma aplicação de automação residencial escrito em Javascript no framework React Native que através do acesso a um banco de dados no Firebase (Database) aciona dispositivos de automação residencial IOT com acesso restrito ao database.
+This is a home automation application written in Javascript using React Native framework that, using a Firebase (Database) access, activates IOT devices with restrict acess to database.
 
-# Como funciona?
+# How it works?
 
-De forma geral o aplicativo irá enviar requsições REST API (via **axios**) ou via comandos específicos do Firebase: escuta (**on** / **once**) e atualização (**update**). Estes dados são alimentados tanto pelo *update* do próprio aplicativo quanto envios de alteração de status a partir dos próprios dispositivos. Uma vez com os dados atualizados, são feitas as atualizações visuais dos status dos componentes no aplicativo.
+In general way the application will send REST API requisition (through  **axios**) or by specific commands of Firebase library: listen (**on** / **once**) and update (**update**).This data is feeding both from *update* command from application itself and changes got from devices.
 
-Além disso o aplicativo conta com telas de configurações dos **dispositivos** e **ambientes**.
+Besides that we have configuration screens for devices (**dispositivos**) and ambients or rooms(**ambientes**).
 
-O App salva a estrutura de Ambientes e Dispositivos no próprio smartphone, portanto cada aparelho pode ter umas próprias configurações de nomes de dispositivos e disposição visual dos mesmo, além de poderem adicionar ou remover os dispositivos que desejarem ter ou não listados.
+The App saves the structure of ambients and devices locally, so each smartphone can have their own device names and visual positions, and they can add or remove the devices they want, have or not, listed.
 
-## Dispositivos
-Os dispositivos são os equipamentos em si conectados na rede local da residência e no firebase através de biblioteca dedicada. Tando no lado do Firebase como do próprio firmware de dispositivo ele possuirá as propriedades:
-- **ipAddress** (IP do dispositivo e usado como ID único);
-- **type** (para identificar o tipo de comportamento funcional do dispositivo);
-- **value** (estado atual do dispositivo);
+## Devices (Dispositivos)
+The devices are boards connected to local home network and to Firebase through a specific library. Both, Firebase side and device side, will have some properties:
 
-No lado do App são adicionadas as propriedades
-- **name** (nome para visualização no app);
-- **iconName** (define o ícone selecionado em um banco de dados [MaterialCommunityIcons](https://materialdesignicons.com/));
-- **order** (define a ordem dos botões de acionamento dos dispositivos apresentada no ambiente selecionado);
+- **ipAddress** (IP address of device and used as unique ID);
+- **type** (to identify the functional behavior of device);
+- **value** (current state of device);
 
+in the App side will be added three new properties:
+- **name** (the name of device you will see in the App);
+- **iconName** (defines the selected icon in the database from [MaterialCommunityIcons](https://materialdesignicons.com/));
+- **order** (defines the order of the activation buttons of devices showed in the current ambient);
 
-sendo as últimas três utilizadas apenas para representação visual dos dispositivos.
+the last three are used only for visual devices representation.
+ 
+ 
 
-## Ambientes
-Ambientes são estruturas utilizadas apenas pelo App. Servem para organizar os dispositivos baseados no cômodos da casa ou demais ambientes possíveis. Futuramente poderão ser utilizados também para organizar os dispositivos em grupos (luzes, aparelhos, favoritos, etc). Assim como os dispositivos, podem ter seus nomes e ícones personalizados nos menus de configurações. Suas propriedades são:
-- **devices** (objetos com os dispositivos adicionados ao ambiente);
-- **iconName** (define o ícone selecionado em um banco de dados [MaterialCommunityIcons](https://materialdesignicons.com/));
-- **id** (identificação única para o ambiente);
-- **name** (nome para visualização no app);
-- **order** (define a ordem para exibição dos ambientes no menu lateral);
+## (Ambients) Ambientes
+Ambients are structures used only by smartphone application. They will organize the devices based on house's rooms or another possible ambients.
 
 
-## Estruturas JSON
-Conforme as propriedades citadas acima, neste projeto temos duas estruturas básicas para representação dos dispositivos. Abaixo um exemplo básico dessas estruturas:
+- **iconName** (define the selected icon in the database from [MaterialCommunityIcons](https://materialdesignicons.com/));
+- **id** (ambient unique identification);
+- **name** (the name of ambient you will see in the App);
+- **order** (defines the order of the activation buttons of devices showed in the current ambient);
 
-### No Firebase
+
+## JSON Structures
+As the properties quoted above, in this project we have two basic structures for devices representation:
+Below you can see a basic example: 
+
+### In Firebase
 ```JSON
 {
     "devices": [
@@ -61,7 +65,7 @@ Conforme as propriedades citadas acima, neste projeto temos duas estruturas bás
     ]
 }
 ```
-### No App
+### In App
 ```JSON
 {
     "ambients": [
@@ -85,17 +89,18 @@ Conforme as propriedades citadas acima, neste projeto temos duas estruturas bás
 }
 
 ``` 
-## Estrutura das telas de Configurações
+## Configuration Screen Structure
 
 ```
-|-- Configurações
-|  |-- Dispositivos
-|  |   |-- Novo
-|  |   |-- Editar
-|  |   |-- Excluir
+|-- Configurações (Configurations)
+|  |-- Dispositivos (Devices)
+|  |   |-- Novo (New)
+|  |   |-- Editar (Edit)
+|  |   |-- Excluir (Delete)
 |  `-- Ambientes
-|      |-- Novo
-|      |-- Editar
-|      |-- Excluir
-|      |-- Reordenar
+|      |-- Novo (New)
+|      |-- Editar (Edit)
+|      |-- Excluir (Delete)
+|      |-- Reordenar (Reorder)
+
 ```
